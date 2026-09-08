@@ -1,0 +1,21 @@
+/*
+Theme Name: Landing Novaly
+Theme URI: https://novaly.example
+Author: Julio
+Description: Tema de bloques (Full Site Editing) para landing informativa. Sin page builder, sin framework CSS. Los tokens visuales viven en theme.json.
+Requires at least: 6.5
+Tested up to: 6.7
+Requires PHP: 8.3
+Version: 0.1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: landing
+*/
+
+/*
+  Este archivo solo lleva la cabecera del tema. WordPress lo exige para
+  reconocer la carpeta como tema, pero NO se usa para estilos.
+  Los estilos van en:
+    - theme.json                -> tokens y estilos globales (los genera WP)
+    - assets/css/theme.css      -> lo poco que theme.json no cubre
+*/
