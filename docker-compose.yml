@@ -1,0 +1,127 @@
+name: landing-wp
+
+services:
+
+  # ---------------------------------------------------------------
+  # Nginx: sirve estáticos y pasa PHP a php-fpm.
+  # Es el único servicio expuesto públicamente.
+  # ---------------------------------------------------------------
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: landing-nginx
+    depends_on:
+      - wordpress
+    ports:
+      - "80:80"
+    volumes:
+      - wp_data:/var/www/html:ro
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    restart: unless-stopped
+    networks: [landing]
+
+  # ---------------------------------------------------------------
+  # WordPress sobre PHP-FPM 8.4 (según ficha técnica).
+  # No publica puertos: solo nginx lo alcanza por la red interna.
+  # ---------------------------------------------------------------
+  wordpress:
+    build:
+      context: ./php
+    container_name: landing-wp
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_DEBUG: ${WP_DEBUG:-1}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        define('DISALLOW_FILE_EDIT', true);
+        define('WP_HOME', '${WP_URL}');
+        define('WP_SITEURL', '${WP_URL}');
+    volumes:
+      - wp_data:/var/www/html
+      # El tema se edita desde el host y se refleja en caliente
+      - ./theme-src:/var/www/html/wp-content/themes/landing
+    restart: unless-stopped
+    networks: [landing]
+
+  # ---------------------------------------------------------------
+  # MySQL 8.0. Puerto atado a localhost: NO queda expuesto a internet
+  # aunque ufw esté configurado (Docker escribe iptables directamente).
+  # Para conectarte desde tu equipo: túnel SSH al 3306.
+  # ---------------------------------------------------------------
+  db:
+    image: mysql:8.0
+    container_name: landing-db
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=256M
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    ports:
+      - "127.0.0.1:3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+    networks: [landing]
+
+  # ---------------------------------------------------------------
+  # Mailpit: servidor SMTP falso para desarrollo.
+  # Captura TODO correo saliente y lo muestra en una bandeja web.
+  # Permite construir y probar el formulario sin tener aún las
+  # credenciales SMTP del cliente.
+  # ---------------------------------------------------------------
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: landing-mailpit
+    ports:
+      - "127.0.0.1:8025:8025"   # UI web, acceder por túnel SSH
+    environment:
+      MP_MAX_MESSAGES: 500
+    restart: unless-stopped
+    networks: [landing]
+
+  # ---------------------------------------------------------------
+  # WP-CLI: contenedor de utilidad, no corre en segundo plano.
+  # Uso: docker compose run --rm wpcli plugin list
+  # ---------------------------------------------------------------
+  wpcli:
+    image: wordpress:cli-php8.4
+    container_name: landing-wpcli
+    depends_on:
+      - wordpress
+    user: "82:82"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - wp_data:/var/www/html
+      - ./theme-src:/var/www/html/wp-content/themes/landing
+    entrypoint: wp
+    profiles: ["cli"]
+    networks: [landing]
+
+volumes:
+  wp_data:
+  db_data:
+
+networks:
+  landing:
+    driver: bridge
