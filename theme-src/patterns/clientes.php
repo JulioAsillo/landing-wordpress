@@ -18,20 +18,20 @@
 	<!-- wp:group {"align":"wide","className":"logo-grid","style":{"spacing":{"margin":{"top":"var:preset|spacing|50"},"blockGap":"var:preset|spacing|50"}},"layout":{"type":"flex","justifyContent":"center","flexWrap":"wrap"}} -->
 	<div class="wp-block-group alignwide logo-grid" style="margin-top:var(--wp--preset--spacing--50)">
 
-		<!-- wp:image {"sizeSlug":"landing-logo","className":"client-logo"} -->
-		<figure class="wp-block-image size-landing-logo client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
+		<!-- wp:image {"className":"client-logo"} -->
+        <figure class="wp-block-image client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
 		<!-- /wp:image -->
 
-		<!-- wp:image {"sizeSlug":"landing-logo","className":"client-logo"} -->
-		<figure class="wp-block-image size-landing-logo client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
+		<!-- wp:image {"className":"client-logo"} -->
+        <figure class="wp-block-image client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
 		<!-- /wp:image -->
 
-		<!-- wp:image {"sizeSlug":"landing-logo","className":"client-logo"} -->
-		<figure class="wp-block-image size-landing-logo client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
-		<!-- /wp:image -->
+		<!-- wp:image {"className":"client-logo"} -->
+        <figure class="wp-block-image client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
+        <!-- /wp:image -->
 
-		<!-- wp:image {"sizeSlug":"landing-logo","className":"client-logo"} -->
-		<figure class="wp-block-image size-landing-logo client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
+		<!-- wp:image {"className":"client-logo"} -->
+        <figure class="wp-block-image client-logo"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-logo.svg' ); ?>" alt="" width="320" height="120"/></figure>
 		<!-- /wp:image -->
 
 	</div>

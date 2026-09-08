@@ -27,24 +27,19 @@
 
 			<!-- wp:buttons {"style":{"spacing":{"margin":{"top":"var:preset|spacing|40"}}}} -->
 			<div class="wp-block-buttons" style="margin-top:var(--wp--preset--spacing--40)">
-				<!-- wp:button -->
+
 				<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="#contacto">Conversemos</a></div>
-				<!-- /wp:button -->
+
 			</div>
-			<!-- /wp:buttons -->
+
 
 		</div>
-		<!-- /wp:column -->
 
-		<!-- wp:column {"verticalAlignment":"center"} -->
 		<div class="wp-block-column is-vertically-aligned-center">
-			<!-- wp:image {"sizeSlug":"landing-hero-md","className":"is-hero","style":{"border":{"radius":"6px"}}} -->
-			<figure class="wp-block-image size-landing-hero-md is-hero has-custom-border">
-				<img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-hero.svg' ); ?>" alt="" width="1180" height="740" style="border-radius:6px"/>
-			</figure>
-			<!-- /wp:image -->
+            <figure class="wp-block-image is-hero"><img src="<?php echo esc_url( get_template_directory_uri() . '/assets/img/placeholder-hero.svg' ); ?>" alt="" width="1180" height="740"/></figure>
+
 		</div>
-		<!-- /wp:column -->
+
 
 	</div>
 	<!-- /wp:columns -->
