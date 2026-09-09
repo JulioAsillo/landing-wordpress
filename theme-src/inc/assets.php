@@ -1,9 +1,6 @@
 <?php
 /**
  * Encolado de recursos.
- *
- * Regla del proyecto: una sola hoja de estilos propia, versionada por
- * filemtime para que el caché largo de Nginx no sirva una versión vieja.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -13,31 +10,46 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_action(
 	'wp_enqueue_scripts',
 	function () {
-		$path = LANDING_DIR . '/assets/css/theme.css';
-
+		$css = GZ_DIR . '/style.css';
 		wp_enqueue_style(
-			'landing-theme',
-			LANDING_URI . '/assets/css/theme.css',
+			'garantiza',
+			get_stylesheet_uri(),
 			array(),
-			file_exists( $path ) ? (string) filemtime( $path ) : LANDING_VERSION
+			file_exists( $css ) ? (string) filemtime( $css ) : GZ_VERSION
 		);
+
+		$js = GZ_DIR . '/assets/js/site.js';
+		if ( file_exists( $js ) ) {
+			wp_enqueue_script(
+				'garantiza',
+				GZ_URI . '/assets/js/site.js',
+				array(),
+				(string) filemtime( $js ),
+				array( 'strategy' => 'defer', 'in_footer' => true )
+			);
+		}
 	}
 );
 
 /**
- * Precarga de la tipografía del primer pintado.
- *
- * Solo la variante 400. Precargar todas las variantes compite por ancho
- * de banda con la imagen del hero y termina empeorando el LCP.
+ * Precarga solo de la variante que aparece en el primer pintado.
+ * Precargar todas compite con la imagen del hero y empeora el LCP.
  */
 add_action(
 	'wp_head',
 	function () {
-		$font = LANDING_URI . '/assets/fonts/landing-sans-400.woff2';
-		printf(
-			'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
-			esc_url( $font )
+		$fonts = array(
+			'/assets/fonts/barlow-400.woff2',
+			'/assets/fonts/barlow-condensed-700.woff2',
 		);
+		foreach ( $fonts as $f ) {
+			if ( file_exists( GZ_DIR . $f ) ) {
+				printf(
+					'<link rel="preload" href="%s" as="font" type="font/woff2" crossorigin>' . "\n",
+					esc_url( GZ_URI . $f )
+				);
+			}
+		}
 	},
 	1
 );
