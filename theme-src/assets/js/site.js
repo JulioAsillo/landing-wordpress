@@ -8,6 +8,19 @@
 	var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 	/* --------------------------------------------------------------
+	 * Cabecera: sombra al separarse del borde superior
+	 * ----------------------------------------------------------- */
+	var header = document.querySelector('[data-header]');
+
+	if (header) {
+		var syncHeader = function () {
+			header.classList.toggle('is-scrolled', window.scrollY > 8);
+		};
+		syncHeader();
+		window.addEventListener('scroll', syncHeader, { passive: true });
+	}
+
+	/* --------------------------------------------------------------
 	 * Menú móvil
 	 * ----------------------------------------------------------- */
 	var toggle = document.querySelector('[data-nav-toggle]');
@@ -15,91 +28,146 @@
 
 	if (toggle && nav) {
 		toggle.addEventListener('click', function () {
-			var open = toggle.getAttribute('aria-expanded') === 'true';
-			toggle.setAttribute('aria-expanded', String(!open));
-			nav.setAttribute('data-open', String(!open));
+			var open = nav.classList.toggle('is-open');
+			toggle.setAttribute('aria-expanded', String(open));
 		});
 
 		// Cerrar al navegar a un ancla.
 		nav.addEventListener('click', function (e) {
-			if (e.target.tagName === 'A') {
+			if (e.target.closest('a')) {
+				nav.classList.remove('is-open');
 				toggle.setAttribute('aria-expanded', 'false');
-				nav.setAttribute('data-open', 'false');
+			}
+		});
+
+		// Cerrar con Escape, para no dejar al teclado atrapado.
+		document.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+				nav.classList.remove('is-open');
+				toggle.setAttribute('aria-expanded', 'false');
+				toggle.focus();
 			}
 		});
 	}
 
 	/* --------------------------------------------------------------
-	 * Acordeón de servicios
-	 * Un solo panel abierto a la vez.
+	 * Detalle de cada tarjeta de servicio
+	 * Independientes entre sí: se pueden abrir varias a la vez.
 	 * ----------------------------------------------------------- */
-	var heads = document.querySelectorAll('[data-accordion]');
+	var toggles = document.querySelectorAll('[data-accordion]');
 
-	Array.prototype.forEach.call(heads, function (head) {
-		head.addEventListener('click', function () {
-			var panel = document.getElementById(head.getAttribute('aria-controls'));
-			var open = head.getAttribute('aria-expanded') === 'true';
+	Array.prototype.forEach.call(toggles, function (btn) {
+		btn.addEventListener('click', function () {
+			var card = btn.closest('.gz-service-card');
+			if (!card) { return; }
 
-			Array.prototype.forEach.call(heads, function (other) {
-				if (other === head) { return; }
-				other.setAttribute('aria-expanded', 'false');
-				var p = document.getElementById(other.getAttribute('aria-controls'));
-				if (p) { p.hidden = true; }
-			});
-
-			head.setAttribute('aria-expanded', String(!open));
-			if (panel) { panel.hidden = open; }
+			var willOpen = !card.classList.contains('is-open');
+			card.classList.toggle('is-open', willOpen);
+			btn.setAttribute('aria-expanded', String(willOpen));
 		});
 	});
 
 	/* --------------------------------------------------------------
 	 * Contadores
-	 * Solo animan cuando entran en pantalla, una sola vez.
+	 * Animan una sola vez, al entrar en pantalla.
 	 * ----------------------------------------------------------- */
-	var counters = document.querySelectorAll('[data-counter]');
+	var counters = document.querySelectorAll('[data-count]');
 
-	function paint(el, value) {
-		var suffix = el.getAttribute('data-suffix') || '';
-		el.textContent = value.toLocaleString('es-PE') + suffix;
+	function formatCount(value) {
+		return '+' + value.toLocaleString('es-PE');
 	}
 
-	function run(el) {
-		var target = parseInt(el.getAttribute('data-counter'), 10) || 0;
+	function animateCount(el) {
+		var target = parseInt(el.getAttribute('data-count'), 10) || 0;
 
-		if (reduceMotion || target === 0) {
-			paint(el, target);
+		if (reduceMotion) {
+			el.textContent = formatCount(target);
 			return;
 		}
 
-		var duration = 1400;
-		var start = null;
+		var duration = 1200;
+		var startTime = null;
 
-		function step(now) {
-			if (start === null) { start = now; }
-			var progress = Math.min((now - start) / duration, 1);
-			// easeOutCubic: arranca rápido y frena al final.
+		function step(ts) {
+			if (!startTime) { startTime = ts; }
+			var progress = Math.min((ts - startTime) / duration, 1);
 			var eased = 1 - Math.pow(1 - progress, 3);
-			paint(el, Math.round(target * eased));
+			el.textContent = formatCount(Math.floor(target * eased));
 			if (progress < 1) { requestAnimationFrame(step); }
 		}
 
 		requestAnimationFrame(step);
 	}
 
-	if ('IntersectionObserver' in window) {
+	/* --------------------------------------------------------------
+	 * Barras de capacidad mensual
+	 * Crecen desde 0 al entrar en pantalla, escalonadas.
+	 * ----------------------------------------------------------- */
+	var bars = document.querySelectorAll('.gz-capacity-bar__fill');
+
+	function growBar(el, index) {
+		var target = el.getAttribute('data-width');
+		setTimeout(function () {
+			el.style.width = target + '%';
+		}, reduceMotion ? 0 : index * 120);
+	}
+
+	/* --------------------------------------------------------------
+	 * Observadores
+	 * Si el navegador no soporta IntersectionObserver, todo se muestra
+	 * en su estado final: nunca se queda contenido invisible.
+	 * ----------------------------------------------------------- */
+	var reveals = document.querySelectorAll('.gz-reveal');
+
+	if (!('IntersectionObserver' in window)) {
+		Array.prototype.forEach.call(counters, function (el) {
+			el.textContent = formatCount(parseInt(el.getAttribute('data-count'), 10) || 0);
+		});
+		Array.prototype.forEach.call(bars, function (el) {
+			el.style.width = el.getAttribute('data-width') + '%';
+		});
+		Array.prototype.forEach.call(reveals, function (el) {
+			el.classList.add('is-visible');
+		});
+		return;
+	}
+
+	function observeOnce(nodes, threshold, onEnter) {
+		if (!nodes.length) { return; }
+
 		var observer = new IntersectionObserver(function (entries) {
 			entries.forEach(function (entry) {
-				if (entry.isIntersecting) {
-					run(entry.target);
-					observer.unobserve(entry.target);
-				}
+				if (!entry.isIntersecting) { return; }
+				onEnter(entry.target, Array.prototype.indexOf.call(nodes, entry.target));
+				observer.unobserve(entry.target);
 			});
-		}, { threshold: 0.4 });
+		}, { threshold: threshold });
 
-		Array.prototype.forEach.call(counters, function (el) {
+		Array.prototype.forEach.call(nodes, function (el) {
 			observer.observe(el);
 		});
-	} else {
-		Array.prototype.forEach.call(counters, run);
 	}
+
+	observeOnce(counters, 0.5, function (el) { animateCount(el); });
+	observeOnce(bars, 0.4, growBar);
+	observeOnce(reveals, 0.2, function (el) { el.classList.add('is-visible'); });
+
+	/* --------------------------------------------------------------
+	 * Vista previa del formulario
+	 * Todavía no hay Fluent Forms conectado: se avisa en lugar de
+	 * recargar la página sin hacer nada.
+	 * ----------------------------------------------------------- */
+	var preview = document.querySelector('[data-form-preview]');
+
+	if (preview) {
+		preview.addEventListener('submit', function (e) {
+			e.preventDefault();
+
+			var note = preview.querySelector('.gz-form-note');
+			if (note) {
+				note.textContent = 'Vista previa del formulario: el envío se habilita al conectar Fluent Forms.';
+			}
+		});
+	}
+
 })();

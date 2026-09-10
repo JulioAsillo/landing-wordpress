@@ -3,7 +3,7 @@
  * Cabecera del sitio.
  */
 ?><!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> class="no-js">
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,42 +14,55 @@
 
 <a class="gz-skip-link" href="#contenido"><?php esc_html_e( 'Saltar al contenido', 'garantiza' ); ?></a>
 
-<header class="gz-header">
-	<div class="gz-container gz-header__inner">
+<header class="gz-header" data-header>
+	<div class="gz-wrap gz-wrap--wide gz-header__inner">
 
-		<?php if ( has_custom_logo() ) : ?>
-			<?php the_custom_logo(); ?>
-		<?php else : ?>
-			<a class="gz-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>">
-				<?php bloginfo( 'name' ); ?>
-			</a>
-		<?php endif; ?>
-
-		<button class="gz-nav-toggle" type="button"
-				aria-expanded="false" aria-controls="gz-nav"
-				data-nav-toggle>
-			<span class="gz-sr-only"><?php esc_html_e( 'Abrir menú', 'garantiza' ); ?></span>
-			<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-				<path d="M3 6h18M3 12h18M3 18h18"/>
-			</svg>
-		</button>
+		<?php
+		if ( has_custom_logo() ) {
+			the_custom_logo();
+		} else {
+			echo gz_logo(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- marcado propio ya escapado.
+		}
+		?>
 
 		<nav class="gz-nav" id="gz-nav" aria-label="<?php esc_attr_e( 'Menú principal', 'garantiza' ); ?>">
 			<?php
-			wp_nav_menu(
-				array(
-					'theme_location' => 'principal',
-					'container'      => false,
-					'depth'          => 1,
-					'fallback_cb'    => false,
-				)
-			);
+			if ( has_nav_menu( 'principal' ) ) {
+				wp_nav_menu(
+					array(
+						'theme_location' => 'principal',
+						'container'      => false,
+						'depth'          => 1,
+						'fallback_cb'    => false,
+					)
+				);
+			} else {
+				/* Respaldo mientras el menú no esté asignado: las mismas
+				   anclas de la maqueta, para que la navegación funcione. */
+				echo '<ul>';
+				foreach ( gz_nav_fallback_links() as $link ) {
+					printf(
+						'<li><a href="%s">%s</a></li>',
+						esc_url( $link['url'] ),
+						esc_html( $link['label'] )
+					);
+				}
+				echo '</ul>';
+			}
 			?>
 		</nav>
 
-		<a class="gz-btn gz-btn--primary gz-header__cta" href="#contacto">
-			<?php esc_html_e( 'Solicitar evaluación', 'garantiza' ); ?>
-		</a>
+		<div class="gz-header__actions">
+			<a class="gz-btn gz-btn--outline" href="#contacto">
+				<?php esc_html_e( 'Solicitar evaluación', 'garantiza' ); ?>
+			</a>
+			<button class="gz-nav-toggle" type="button"
+					aria-label="<?php esc_attr_e( 'Abrir menú', 'garantiza' ); ?>"
+					aria-expanded="false" aria-controls="gz-nav"
+					data-nav-toggle>
+				<span></span><span></span><span></span>
+			</button>
+		</div>
 
 	</div>
 </header>

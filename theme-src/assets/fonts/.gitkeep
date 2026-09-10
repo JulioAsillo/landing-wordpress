@@ -1,0 +1,12 @@
+Aquí van las tipografías auto-alojadas cuando diseño las entregue:
+
+  barlow-400.woff2
+  barlow-600.woff2
+  barlow-700.woff2
+  barlow-condensed-600.woff2
+  barlow-condensed-700.woff2
+
+Mientras falte cualquiera de las cinco, inc/assets.php carga Barlow
+desde Google Fonts. En cuanto estén las cinco, el tema las declara con
+@font-face, precarga las dos críticas y deja de pedir nada fuera del
+dominio. No hay que tocar código.

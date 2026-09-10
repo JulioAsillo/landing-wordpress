@@ -17,12 +17,16 @@ add_filter(
 	}
 );
 
+/**
+ * El hero de la maqueta es una fotografía a sangre detrás del texto, no
+ * una imagen en columna. Por eso los recortes son apaisados y anchos.
+ */
 add_action(
 	'after_setup_theme',
 	function () {
-		add_image_size( 'gz-hero-sm', 720, 540, true );
-		add_image_size( 'gz-hero-md', 1100, 825, true );
-		add_image_size( 'gz-hero-lg', 1600, 1200, true );
+		add_image_size( 'gz-hero-sm', 900, 700, true );
+		add_image_size( 'gz-hero-md', 1400, 800, true );
+		add_image_size( 'gz-hero-lg', 2000, 1000, true );
 		add_image_size( 'gz-logo', 320, 0, false );
 	}
 );
@@ -45,31 +49,96 @@ add_filter(
 add_filter( 'wp_omit_loading_attr_threshold', fn() => 1 );
 
 /**
- * Devuelve el marcado de una imagen del hero con prioridad alta.
+ * Fotografía de fondo del hero.
  *
- * Se resuelve aquí y no con un filtro global porque en un tema clásico
- * sabemos exactamente cuál es la imagen del LCP.
+ * Es la imagen del LCP, así que se resuelve aquí y no con un filtro
+ * global: en un tema clásico sabemos exactamente cuál es.
+ *
+ * El cliente la sustituye desde Apariencia > Personalizar sin tocar
+ * código; mientras tanto se usa la que trae la maqueta.
+ *
+ * @param int $attachment_id ID del adjunto elegido en el personalizador.
+ * @return string
  */
-function gz_hero_image( $attachment_id = 0, $fallback = '' ) {
+function gz_hero_image( $attachment_id = 0 ) {
 	if ( $attachment_id ) {
 		return wp_get_attachment_image(
 			$attachment_id,
-			'gz-hero-md',
+			'gz-hero-lg',
 			false,
 			array(
-				'class'         => 'gz-hero__img',
+				'class'         => 'gz-hero__photo',
+				'alt'           => '',
 				'fetchpriority' => 'high',
 				'decoding'      => 'sync',
 				'loading'       => 'eager',
-				'sizes'         => '(max-width: 899px) 100vw, 46vw',
+				'sizes'         => '100vw',
 			)
 		);
 	}
 
-	$src = $fallback ? $fallback : GZ_URI . '/assets/img/placeholder-hero.svg';
-
 	return sprintf(
-		'<img src="%s" alt="" width="1100" height="825" class="gz-hero__img" fetchpriority="high" decoding="sync" loading="eager">',
-		esc_url( $src )
+		'<img src="%s" alt="" width="1400" height="593" class="gz-hero__photo" fetchpriority="high" decoding="sync" loading="eager">',
+		esc_url( GZ_URI . '/assets/img/hero-garantiza.jpg' )
 	);
 }
+
+/**
+ * Registra el control del personalizador para la imagen del hero.
+ * Un solo control: no tiene sentido pedirle al cliente que entre a
+ * editar plantillas para cambiar una foto.
+ */
+add_action(
+	'customize_register',
+	function ( $wp_customize ) {
+		$wp_customize->add_section(
+			'gz_landing',
+			array(
+				'title'       => __( 'Landing Garantiza', 'garantiza' ),
+				'priority'    => 30,
+				'description' => __( 'Ajustes de la portada.', 'garantiza' ),
+			)
+		);
+
+		$wp_customize->add_setting(
+			'gz_hero_image_id',
+			array(
+				'default'           => 0,
+				'sanitize_callback' => 'absint',
+				'transport'         => 'refresh',
+			)
+		);
+
+		$wp_customize->add_control(
+			new WP_Customize_Media_Control(
+				$wp_customize,
+				'gz_hero_image_id',
+				array(
+					'label'       => __( 'Fotografía del hero', 'garantiza' ),
+					'description' => __( 'Apaisada, mínimo 2000 px de ancho. El texto se lee sobre el lado izquierdo.', 'garantiza' ),
+					'section'     => 'gz_landing',
+					'mime_type'   => 'image',
+				)
+			)
+		);
+
+		$wp_customize->add_setting(
+			'gz_form_id',
+			array(
+				'default'           => 0,
+				'sanitize_callback' => 'absint',
+				'transport'         => 'refresh',
+			)
+		);
+
+		$wp_customize->add_control(
+			'gz_form_id',
+			array(
+				'label'       => __( 'ID del formulario de Fluent Forms', 'garantiza' ),
+				'description' => __( 'Mientras esté en 0 se muestra la vista previa del formulario de la maqueta.', 'garantiza' ),
+				'section'     => 'gz_landing',
+				'type'        => 'number',
+			)
+		);
+	}
+);
