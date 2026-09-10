@@ -527,3 +527,40 @@ ul { margin: 0; padding: 0; list-style: none; }
 		transition-duration: .01ms !important;
 	}
 }
+
+/* =======================================================================
+   14. TILES DE CLIENTES  (prototipo 1)
+   Grilla de marcas en texto. Acepta imagen si el cliente entrega logos
+   con permiso de uso.
+   ==================================================================== */
+
+.gz-client-marks {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: var(--gz-sp-sm);
+}
+@media (min-width: 560px) { .gz-client-marks { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 900px) { .gz-client-marks { grid-template-columns: repeat(6, 1fr); } }
+
+.gz-client-mark {
+	display: flex; align-items: center; justify-content: center;
+	min-height: 72px;
+	background: var(--gz-base);
+	border: 1px solid var(--gz-line);
+	border-radius: var(--gz-radius-sm);
+	padding: 1.2rem .8rem;
+	text-align: center;
+	font-family: var(--gz-font-display);
+	font-weight: 700;
+	font-size: .92rem;
+	color: var(--gz-ink-soft);
+}
+
+.gz-client-mark img {
+	max-height: 40px;
+	width: auto;
+	object-fit: contain;
+	/* Escala de grises: unifica logos de distinta saturación. */
+	filter: grayscale(1);
+	opacity: .8;
+}

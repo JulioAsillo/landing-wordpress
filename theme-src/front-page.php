@@ -192,11 +192,9 @@ get_header();
 		<p class="gz-eyebrow" style="text-align:center"><?php esc_html_e( 'Nuestros clientes', 'garantiza' ); ?></p>
 		<h2 style="text-align:center"><?php esc_html_e( 'Trabajamos con entidades de primer nivel del sector financiero', 'garantiza' ); ?></h2>
 
-		<div class="gz-clients" style="margin-top:var(--gz-sp-lg)">
+		<div class="gz-client-marks" style="margin-top:var(--gz-sp-lg)">
 			<?php foreach ( gz_clients() as $client ) : ?>
-				<span style="font-family:var(--gz-font-display);font-size:1.5rem;font-weight:700;color:var(--gz-ink-soft)">
-					<?php echo esc_html( $client ); ?>
-				</span>
+				<span class="gz-client-mark"><?php echo esc_html( $client ); ?></span>
 			<?php endforeach; ?>
 		</div>
 

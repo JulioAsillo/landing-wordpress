@@ -172,12 +172,34 @@ function gz_comparison() {
 }
 
 /**
- * Clientes. Los logos reales los entrega el cliente; hasta entonces
- * se listan como texto.
+ * Clientes. En el prototipo 1 se muestran como tiles de texto en grilla
+ * de 6 columnas, no como logos. Si el cliente entrega logos con permiso
+ * de uso, el tile acepta una imagen en lugar del texto.
  */
 function gz_clients() {
 	return apply_filters(
 		'gz_clients',
 		array( 'Santander', 'COFIDE', 'BanBif', 'Caja Trujillo', 'Financiera Confianza' )
+	);
+}
+
+/**
+ * Campos del formulario de contacto.
+ *
+ * PENDIENTE DE VALIDACIÓN. Esta es la estructura del prototipo 1 y sirve
+ * como referencia para construir el formulario en Fluent Forms. El tema
+ * no renderiza estos campos: los pinta Fluent Forms. Se dejan aquí para
+ * que el formulario real se arme con los mismos nombres y no haya que
+ * retocar estilos ni la lógica de notificación cuando se confirme.
+ */
+function gz_form_fields_reference() {
+	return array(
+		array( 'name' => 'empresa',  'label' => 'Empresa / entidad',        'type' => 'text',     'required' => true ),
+		array( 'name' => 'tipo',     'label' => 'Tipo de entidad',          'type' => 'select',   'required' => true,
+			'options' => array( 'Banco', 'Financiera', 'Caja municipal / rural', 'Otro' ) ),
+		array( 'name' => 'nombre',   'label' => 'Nombre y cargo',           'type' => 'text',     'required' => true ),
+		array( 'name' => 'telefono', 'label' => 'Teléfono',                 'type' => 'tel',      'required' => false ),
+		array( 'name' => 'correo',   'label' => 'Correo corporativo',       'type' => 'email',    'required' => true ),
+		array( 'name' => 'mensaje',  'label' => 'Cuéntanos sobre tu cartera','type' => 'textarea', 'required' => false ),
 	);
 }
