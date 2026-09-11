@@ -1,4 +1,4 @@
-.PHONY: up down logs restart build wp shell db-dump db-restore prune install
+.PHONY: up down logs restart build wp shell db-dump db-restore prune install debug-log
 
 up:            ## Levanta todo el stack
 	docker compose up -d
@@ -21,14 +21,20 @@ shell:         ## Entra al contenedor de WordPress
 wp:            ## Ejecuta WP-CLI. Uso: make wp CMD="plugin list"
 	docker compose run --rm wpcli $(CMD)
 
-install:       ## Instalación desatendida de WordPress
+install:       ## Instalación desatendida (usuario no predecible; muestra la contraseña una vez)
+	@PASS="$$(openssl rand -base64 18)"; \
+	ADMIN="$$(grep WP_ADMIN_USER .env | cut -d= -f2)"; \
 	docker compose run --rm wpcli core install \
 		--url="$$(grep WP_URL .env | cut -d= -f2)" \
 		--title="Landing" \
-		--admin_user=admin \
-		--admin_password="$$(openssl rand -base64 16)" \
-		--admin_email=dev@localhost \
-		--skip-email
+		--admin_user="$$ADMIN" \
+		--admin_password="$$PASS" \
+		--admin_email="$$(grep WP_ADMIN_EMAIL .env | cut -d= -f2)" \
+		--skip-email && \
+	echo "Usuario: $$ADMIN  Contraseña: $$PASS  (guárdala en tu gestor de contraseñas)"
+
+debug-log:     ## Sigue el log de depuración de WordPress (fuera de la raíz web)
+	docker compose exec wordpress sh -c 'touch /tmp/wp-debug.log && tail -f /tmp/wp-debug.log'
 
 db-dump:       ## Respaldo de la base de datos con fecha
 	@mkdir -p backups

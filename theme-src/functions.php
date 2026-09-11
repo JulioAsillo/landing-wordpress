@@ -17,3 +17,4 @@ require_once GZ_DIR . '/inc/performance.php';
 require_once GZ_DIR . '/inc/images.php';
 require_once GZ_DIR . '/inc/icons.php';
 require_once GZ_DIR . '/inc/content.php';
+require_once GZ_DIR . '/inc/security.php';
