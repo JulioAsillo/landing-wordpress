@@ -144,7 +144,6 @@ function gz_services() {
 						'Trámite para el retiro de unidad en comisaría',
 						'Entrega de la unidad recuperada',
 						'Formalización notarial de la ejecución extrajudicial',
-						'Soporte legal del proceso de inscripción en SUNARP',
 					),
 				),
 				array(
