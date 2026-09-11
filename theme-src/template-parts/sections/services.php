@@ -47,11 +47,13 @@ $strip    = gz_services_strip();
 					</button>
 
 					<div class="gz-service-card__panel" id="<?php echo esc_attr( $panel_id ); ?>">
-						<ul>
-							<?php foreach ( $service['items'] as $item ) : ?>
-								<li><?php echo esc_html( $item ); ?></li>
-							<?php endforeach; ?>
-						</ul>
+						<div class="gz-service-card__panel-inner">
+							<ul>
+								<?php foreach ( $service['items'] as $item ) : ?>
+									<li><?php echo esc_html( $item ); ?></li>
+								<?php endforeach; ?>
+							</ul>
+						</div>
 					</div>
 
 				</article>

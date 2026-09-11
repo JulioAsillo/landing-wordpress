@@ -2,7 +2,7 @@
 /**
  * Portada de la landing.
  *
- * Compone las seis secciones de la maqueta. Cada una vive en su propio
+ * Compone las secciones de la maqueta. Cada una vive en su propio
  * archivo bajo /template-parts/sections y lee su contenido de
  * /inc/content.php, no de literales, para que la capa administrable se
  * pueda enchufar sin tocar el marcado.
@@ -10,7 +10,8 @@
 
 get_header();
 
-$gz_sections = array( 'hero', 'statistics', 'services', 'comparison', 'clients', 'contact' );
+// 'clients' retirada a pedido del cliente (v0.3.0); la plantilla se conserva.
+$gz_sections = array( 'hero', 'statistics', 'services', 'comparison', 'contact' );
 
 /**
  * Permite reordenar o quitar secciones sin editar esta plantilla.

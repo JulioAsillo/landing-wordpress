@@ -38,13 +38,17 @@ $hero = gz_hero();
 			<p class="gz-hero__lead"><?php echo esc_html( $hero['lead'] ); ?></p>
 
 			<div class="gz-hero__ctas">
-				<a class="gz-btn gz-btn--primary" href="<?php echo esc_url( $hero['cta_primary']['url'] ); ?>">
-					<?php echo esc_html( $hero['cta_primary']['label'] ); ?>
-				</a>
+				<?php if ( ! empty( $hero['cta_primary']['label'] ) ) : ?>
+					<a class="gz-btn gz-btn--primary" href="<?php echo esc_url( $hero['cta_primary']['url'] ); ?>">
+						<?php echo esc_html( $hero['cta_primary']['label'] ); ?>
+					</a>
+				<?php endif; ?>
+				<?php if ( ! empty( $hero['cta_ghost']['label'] ) ) : ?>
 				<a class="gz-btn gz-btn--ghost" href="<?php echo esc_url( $hero['cta_ghost']['url'] ); ?>">
 					<?php echo esc_html( $hero['cta_ghost']['label'] ); ?>
 					<?php echo gz_icon( 'arrow-right' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 				</a>
+				<?php endif; ?>
 			</div>
 
 		</div>

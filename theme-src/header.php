@@ -54,7 +54,7 @@
 
 		<div class="gz-header__actions">
 			<a class="gz-btn gz-btn--outline" href="#contacto">
-				<?php esc_html_e( 'Solicitar evaluación', 'garantiza' ); ?>
+				<?php esc_html_e( 'Solicita información', 'garantiza' ); ?>
 			</a>
 			<button class="gz-nav-toggle" type="button"
 					aria-label="<?php esc_attr_e( 'Abrir menú', 'garantiza' ); ?>"

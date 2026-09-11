@@ -2,7 +2,7 @@
 Theme Name: Garantiza
 Description: Tema a medida para la landing informativa de Garantiza. Tema clásico, sin page builder ni framework CSS. Los tokens y el marcado replican la maqueta aprobada por el equipo de diseño.
 Author: Julio
-Version: 0.2.0
+Version: 0.3.0
 Requires at least: 6.5
 Requires PHP: 8.3
 License: GNU General Public License v2 or later
@@ -477,6 +477,9 @@ button { font-family: inherit; cursor: pointer; }
 	.gz-capacity-bar { flex-direction: column; align-items: flex-start; gap: .4rem; }
 	.gz-capacity-bar__label { width: auto; }
 	.gz-capacity-bar__track { width: 100%; }
+	/* Con el prefijo "+" la cifra no cabe en las barras al 50 %: la barra
+	   crece lo necesario para no recortar el texto. */
+	.gz-capacity-bar__fill { min-width: max-content; }
 }
 
 /* =======================================================================
@@ -530,8 +533,15 @@ button { font-family: inherit; cursor: pointer; }
 .gz-service-card__toggle svg { width: 14px; height: 14px; transition: transform .2s ease; }
 .gz-service-card.is-open .gz-service-card__toggle svg { transform: rotate(90deg); }
 
-.gz-service-card__panel { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
-.gz-service-card.is-open .gz-service-card__panel { max-height: 260px; }
+/* Acordeón sin altura fija: la fila del grid pasa de 0fr a 1fr y el
+   panel toma la altura real de su lista, sin recortar ítems largos. */
+.gz-service-card__panel {
+	display: grid; grid-template-rows: 0fr;
+	transition: grid-template-rows .3s ease;
+}
+.gz-service-card.is-open .gz-service-card__panel { grid-template-rows: 1fr; }
+.gz-service-card__panel-inner { min-height: 0; overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .gz-service-card__panel { transition: none; } }
 .gz-service-card__panel ul {
 	padding: 1rem 0 0; margin: .9rem 0 0;
 	border-top: 1px solid var(--gz-line);

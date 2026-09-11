@@ -27,11 +27,13 @@ function gz_hero() {
 		array(
 			'eyebrow'     => 'Gestión integral de garantías mobiliarias',
 			'title_lines' => array(
-				array( 'text' => 'Maximizamos el valor de tu garantía,', 'accent' => false ),
+				array( 'text' => 'Maximizamos el valor de tu garantía mobiliaria,', 'accent' => false ),
 				array( 'text' => 'minimizamos los tiempos del proceso.', 'accent' => true ),
 			),
 			'lead'        => 'Acompañamos a empresas y entidades financieras durante todo el ciclo de una garantía mobiliaria: constitución, ejecución, incautación y venta del activo, bajo un solo proceso.',
-			'cta_primary' => array( 'label' => 'Solicitar evaluación de cartera', 'url' => '#contacto' ),
+			// CTA principal retirado a pedido del cliente (revisión de textos v0.3.0).
+			// Para restituirlo: array( 'label' => '…', 'url' => '#contacto' ).
+			'cta_primary' => array(),
 			'cta_ghost'   => array( 'label' => 'Ver cómo trabajamos', 'url' => '#servicios' ),
 			'quote'       => '“Gestionamos integralmente el ciclo de una garantía mobiliaria, de inicio a fin.”',
 		)
@@ -88,12 +90,12 @@ function gz_capacity() {
 	return apply_filters(
 		'gz_capacity',
 		array(
-			'title' => 'Nuestra capacidad mensual',
+			'title' => 'Nuestros resultados por mes',
 			'items' => array(
-				array( 'label' => 'Constitución Garantías', 'value' => '800 Unidades / Mes', 'width' => 100 ),
-				array( 'label' => 'Emisión Orden Captura',  'value' => '500 Órdenes / Mes', 'width' => 63 ),
-				array( 'label' => 'Incautación Unidades',   'value' => '400 Unidades / Mes', 'width' => 50 ),
-				array( 'label' => 'Ventas de Unidades',     'value' => '400 Unidades / Mes', 'width' => 50 ),
+				array( 'label' => 'Constitución Garantías', 'value' => '+800 Unidades / Mes', 'width' => 100 ),
+				array( 'label' => 'Emisión Orden Captura',  'value' => '+500 Órdenes / Mes', 'width' => 63 ),
+				array( 'label' => 'Incautación Unidades',   'value' => '+400 Unidades / Mes', 'width' => 50 ),
+				array( 'label' => 'Ventas de Unidades',     'value' => '+400 Unidades / Mes', 'width' => 50 ),
 			),
 		)
 	);
@@ -107,30 +109,26 @@ function gz_services() {
 		'gz_services',
 		array(
 			'kicker' => 'Nuestros servicios',
-			'title'  => 'Un proceso, cuatro etapas, un solo responsable',
+			'title'  => 'Cuatro etapas, un solo proceso, un solo responsable',
 			'lead'   => 'Acompañamos la garantía mobiliaria en cada etapa de su ciclo de vida, desde la constitución del contrato hasta la venta del activo recuperado.',
 			'link'   => array( 'label' => 'Ver todos los servicios', 'url' => '#contacto' ),
 			'items'  => array(
 				array(
 					'num'   => '01',
 					'title' => 'Constitución de Garantías Mobiliarias',
-					'desc'  => 'Estructuramos el contrato, gestionamos firmas y notaría, y llevamos el registro hasta su inscripción en SUNARP.',
+					'desc'  => 'Estructuramos el contrato hasta su inscripción en el SIGM – SUNARP.',
 					'items' => array(
 						'Estructuración legal del contrato',
-						'Toma física de firmas de los participantes',
-						'Legalización de contratos ante notaría',
-						'Seguimiento de emisión de placa',
-						'Elaboración del inserto de GM',
 						'Registro e inscripción en SUNARP (SIGM)',
 					),
 				),
 				array(
 					'num'   => '02',
 					'title' => 'Ejecución de Garantías Mobiliarias',
-					'desc'  => 'Iniciamos la vía judicial cuando es necesario, desde la notificación al deudor hasta la orden de captura.',
+					'desc'  => 'Gestionamos el proceso judicial de incautación, desde la notificación al deudor hasta la emisión y registro de la orden de captura del vehículo.',
 					'items' => array(
 						'Recopilación de información y sustentos',
-						'Notificación notarial al deudor',
+						'Notificación notarial al deudor y/o por formulario del SIGM',
 						'Elaboración del expediente de demanda',
 						'Registro de demanda ante el Poder Judicial',
 						'Seguimiento de la calificación judicial',
@@ -140,10 +138,9 @@ function gz_services() {
 				array(
 					'num'   => '03',
 					'title' => 'Incautación y Ejecución Extrajudicial',
-					'desc'  => 'Ubicamos y recuperamos la unidad, con o sin GPS, con soporte directo de la PNP.',
+					'desc'  => 'Gestionamos la ubicación y recuperamos los vehículos con y sin GPS.',
 					'items' => array(
 						'Ubicación de la unidad (con y sin GPS)',
-						'Recupero de la unidad con soporte del PNP',
 						'Trámite para el retiro de unidad en comisaría',
 						'Entrega de la unidad recuperada',
 						'Formalización notarial de la ejecución extrajudicial',
@@ -153,14 +150,15 @@ function gz_services() {
 				array(
 					'num'   => '04',
 					'title' => 'Venta de Unidades Recuperadas',
-					'desc'  => 'Convertimos la unidad recuperada en liquidez: evaluamos, subastamos y entregamos el efectivo a la entidad.',
+					'desc'  => 'Convertimos la unidad recuperada en liquidez, monitoreamos el proceso de realización o subasta de las unidades recuperadas.',
 					'items' => array(
 						'Evaluación de gravámenes',
-						'Cálculo del precio de venta',
-						'Programación y publicación de la subasta',
-						'Gestión de contraofertas para maximizar el precio',
+						'Monitoreo en proceso de subastas vehiculares',
 						'Gestión operativa con el comprador',
-						'Recolección y entrega del efectivo a la entidad',
+						'Gestión de transferencias vehiculares por ejecución de garantía mobiliaria',
+						'Seguimiento del proceso hasta la inscripción de propiedad en el Registro de Propiedad Vehicular',
+						'Cancelaciones o levantamientos en SUNARP o en el SIGM por ejecución de garantía mobiliaria',
+						'Levantamiento de orden de incautación en el Poder Judicial',
 					),
 				),
 			),
@@ -175,7 +173,7 @@ function gz_services_strip() {
 	return apply_filters(
 		'gz_services_strip',
 		array(
-			'text'  => 'Un solo proceso, un solo responsable: así generamos ahorro en costos a lo largo de todo el ciclo de la garantía.',
+			'text'  => 'Un solo proceso, un solo responsable: así generamos ahorro en costos a lo largo de todo el ciclo de la garantía mobiliaria.',
 			'items' => array(
 				array( 'verb' => 'Simplificamos', 'object' => 'la gestión' ),
 				array( 'verb' => 'Reducimos',     'object' => 'los tiempos' ),
@@ -235,6 +233,10 @@ function gz_comparison() {
 /**
  * Clientes.
  *
+ * SECCIÓN RETIRADA DE LA PORTADA (v0.3.0) a pedido del cliente. Los datos
+ * y la plantilla se conservan para reactivarla: agregar 'clients' en
+ * $gz_sections (front-page.php) y el enlace #clientes en el menú.
+ *
  * La maqueta los muestra como tiles de texto en grilla de 6 columnas,
  * no como logos. Si el cliente entrega los logos con permiso de uso,
  * cada entrada acepta 'image' con el ID del adjunto y el tile pinta la
@@ -266,7 +268,7 @@ function gz_contact() {
 		'gz_contact',
 		array(
 			'kicker' => 'Contacto',
-			'title'  => 'Solicita una evaluación de tu cartera',
+			'title'  => 'Solicita información',
 			'lead'   => 'Cuéntanos sobre tu cartera de garantías mobiliarias y te contactamos para revisar cómo podemos gestionar el ciclo completo.',
 			'items'  => array(
 				array(
@@ -348,7 +350,6 @@ function gz_footer() {
 						array( 'label' => 'Nosotros', 'url' => '#nosotros' ),
 						array( 'label' => 'Servicios', 'url' => '#servicios' ),
 						array( 'label' => 'Por qué Garantiza', 'url' => '#por-que-garantiza' ),
-						array( 'label' => 'Clientes', 'url' => '#clientes' ),
 					),
 				),
 				array(
@@ -390,7 +391,6 @@ function gz_nav_fallback_links() {
 			array( 'label' => 'Nosotros', 'url' => '#nosotros' ),
 			array( 'label' => 'Servicios', 'url' => '#servicios' ),
 			array( 'label' => 'Por qué Garantiza', 'url' => '#por-que-garantiza' ),
-			array( 'label' => 'Clientes', 'url' => '#clientes' ),
 			array( 'label' => 'Contacto', 'url' => '#contacto' ),
 		)
 	);
