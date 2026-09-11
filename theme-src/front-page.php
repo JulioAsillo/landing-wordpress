@@ -11,7 +11,8 @@
 get_header();
 
 // 'clients' retirada a pedido del cliente (v0.3.0); la plantilla se conserva.
-$gz_sections = array( 'hero', 'statistics', 'services', 'comparison', 'contact' );
+// 'clients-band' es la cinta de logos de la propuesta, va pegada al hero.
+$gz_sections = array( 'hero', 'clients-band', 'statistics', 'services', 'comparison', 'contact' );
 
 /**
  * Permite reordenar o quitar secciones sin editar esta plantilla.

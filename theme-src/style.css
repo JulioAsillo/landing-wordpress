@@ -665,6 +665,84 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 900px) { .gz-client-marks { grid-template-columns: repeat(3, 1fr); } }
 @media (max-width: 560px) { .gz-client-marks { grid-template-columns: repeat(2, 1fr); } }
 
+/* -----------------------------------------------------------------------
+   9b. BANDA DE ENTIDADES (bajo el hero)
+   Logos monocromos en azul oscuro atenuado; recuperan opacidad al pasar
+   el cursor por la cinta, que además se detiene.
+   ----------------------------------------------------------------------- */
+
+.gz-logo-band {
+	background: var(--gz-base);
+	border-bottom: 1px solid var(--gz-line);
+	padding-block: 2.25rem 2.5rem;
+	text-align: center;
+}
+
+.gz-logo-band__label {
+	font-size: .84rem; font-weight: 700;
+	color: var(--gz-ink-soft);
+	margin: 0 0 1.5rem;
+}
+
+.gz-logo-band__marquee {
+	--gz-band-gap: clamp(3rem, 7vw, 5.25rem);
+	overflow: hidden;
+	-webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+	        mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.gz-logo-band__track {
+	display: flex;
+	width: max-content;
+	animation: gz-band-scroll 28s linear infinite;
+}
+.gz-logo-band__marquee:hover .gz-logo-band__track { animation-play-state: paused; }
+
+/* Cada copia lleva su propio padding final = gap, así -50% cae exacto. */
+.gz-logo-band__set {
+	display: flex; align-items: center;
+	gap: var(--gz-band-gap);
+	padding: 0 var(--gz-band-gap) 0 0;
+	margin: 0; list-style: none;
+}
+
+.gz-logo-band__item { display: flex; align-items: center; height: 48px; }
+
+.gz-logo-band__item img {
+	display: block;
+	height: var(--gz-logo-h, 34px);
+	width: auto; max-width: none;
+	opacity: .5;
+	transition: opacity .25s ease;
+}
+.gz-logo-band__marquee:hover img { opacity: .9; }
+
+.gz-logo-band__more {
+	font-family: var(--gz-font-display);
+	font-weight: 700; font-size: 1.25rem;
+	color: #9CACC0; letter-spacing: .01em;
+	white-space: nowrap;
+}
+
+@keyframes gz-band-scroll {
+	from { transform: translateX(0); }
+	to   { transform: translateX(-50%); }
+}
+
+@media (max-width: 560px) {
+	.gz-logo-band { padding-block: 1.75rem 2rem; }
+	.gz-logo-band__item img { height: calc(var(--gz-logo-h, 34px) * .82); }
+}
+
+/* Sin movimiento: una sola fila centrada, sin la copia del bucle. */
+@media (prefers-reduced-motion: reduce) {
+	.gz-logo-band__marquee { -webkit-mask-image: none; mask-image: none; }
+	.gz-logo-band__track { animation: none; width: auto; justify-content: center; }
+	.gz-logo-band__set { flex-wrap: wrap; justify-content: center; padding: 0; row-gap: 1.25rem; }
+	.gz-logo-band__set[aria-hidden="true"] { display: none; }
+	.gz-logo-band__item img { opacity: .75; }
+}
+
 /* =======================================================================
    10. CONTACTO
    ==================================================================== */

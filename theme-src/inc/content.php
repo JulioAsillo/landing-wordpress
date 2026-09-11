@@ -260,6 +260,29 @@ function gz_clients() {
 }
 
 /**
+ * Banda de entidades bajo el hero (clients-band de la propuesta).
+ *
+ * Independiente de gz_clients(): esa sección sigue retirada. 'logo' es
+ * el archivo en /assets/img/clients; sin 'logo' el ítem se pinta como
+ * texto. 'height' compensa la proporción de cada marca para que se lean
+ * con el mismo peso visual; 'width' se da para reservar espacio (CLS).
+ */
+function gz_clients_band() {
+	return apply_filters(
+		'gz_clients_band',
+		array(
+			'label' => 'Clientes de primer nivel',
+			'items' => array(
+				array( 'name' => 'Santander', 'logo' => 'santander.svg', 'width' => 169, 'height' => 30 ),
+				array( 'name' => 'COFIDE', 'logo' => 'cofide.svg', 'width' => 161, 'height' => 44 ),
+				array( 'name' => 'BanBif', 'logo' => 'banbif.svg', 'width' => 127, 'height' => 36 ),
+				array( 'name' => '+ otras entidades' ),
+			),
+		)
+	);
+}
+
+/**
  * Sección de contacto: copy y tarjetas de canal.
  */
 function gz_contact() {
