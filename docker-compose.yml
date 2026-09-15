@@ -32,6 +32,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # Credenciales del correo saliente. Archivo aparte, fuera del
+    # repositorio: así la contraseña no pasa por la interpolación de
+    # Compose (admite caracteres como $ sin escaparlos) ni se escribe
+    # en ningún archivo versionado.
+    env_file:
+      - .env.mail
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_NAME: ${DB_NAME}
@@ -46,6 +52,23 @@ services:
         define('DISALLOW_FILE_EDIT', true);
         define('WP_HOME', '${WP_URL}');
         define('WP_SITEURL', '${WP_URL}');
+
+        // --- Correo saliente (WP Mail SMTP) ---
+        // Se configura por constantes y no desde el panel: la contraseña
+        // no se guarda en la base de datos y los campos quedan bloqueados
+        // en wp-admin. Los valores provienen de .env.mail.
+        define('WPMS_ON', true);
+        define('WPMS_MAILER', 'smtp');
+        define('WPMS_SMTP_HOST', getenv('SMTP_HOST') ?: 'mailpit');
+        define('WPMS_SMTP_PORT', (int) (getenv('SMTP_PORT') ?: 1025));
+        define('WPMS_SSL', getenv('SMTP_ENCRYPTION') ?: '');
+        define('WPMS_SMTP_AUTH', getenv('SMTP_USER') ? true : false);
+        define('WPMS_SMTP_USER', getenv('SMTP_USER') ?: '');
+        define('WPMS_SMTP_PASS', getenv('SMTP_PASSWORD') ?: '');
+        define('WPMS_MAIL_FROM', getenv('SMTP_FROM') ?: 'no-reply@localhost');
+        define('WPMS_MAIL_FROM_NAME', getenv('SMTP_FROM_NAME') ?: 'Garantiza');
+        define('WPMS_MAIL_FROM_FORCE', true);
+        define('WPMS_MAIL_FROM_NAME_FORCE', true);
     volumes:
       - wp_data:/var/www/html
       # El tema se edita desde el host y se refleja en caliente

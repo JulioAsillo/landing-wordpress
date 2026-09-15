@@ -8,3 +8,6 @@ RUN docker-php-ext-enable imagick || true
 
 # Configuración de PHP alineada con lo que espera WordPress
 COPY php.ini /usr/local/etc/php/conf.d/zz-landing.ini
+
+# Expone las variables de entorno del contenedor a PHP (ver fpm-env.conf)
+COPY fpm-env.conf /usr/local/etc/php-fpm.d/zz-env.conf

@@ -1,4 +1,4 @@
-.PHONY: up down logs restart build wp shell db-dump db-restore prune install debug-log
+.PHONY: up down logs restart build wp shell db-dump db-restore prune install debug-log mail-test mail-check
 
 up:            ## Levanta todo el stack
 	docker compose up -d
@@ -32,6 +32,13 @@ install:       ## Instalación desatendida (usuario no predecible; muestra la co
 		--admin_email="$$(grep WP_ADMIN_EMAIL .env | cut -d= -f2)" \
 		--skip-email && \
 	echo "Usuario: $$ADMIN  Contraseña: $$PASS  (guárdala en tu gestor de contraseñas)"
+
+mail-check:    ## Muestra la configuración SMTP activa (sin revelar la contraseña)
+	@docker compose run --rm -T wpcli eval 'foreach (["WPMS_ON","WPMS_MAILER","WPMS_SMTP_HOST","WPMS_SMTP_PORT","WPMS_SSL","WPMS_SMTP_AUTH","WPMS_SMTP_USER","WPMS_MAIL_FROM"] as $$c) { printf("%-18s %s\n", $$c, var_export(defined($$c) ? constant($$c) : null, true)); } printf("%-18s %s\n", "WPMS_SMTP_PASS", defined("WPMS_SMTP_PASS") && WPMS_SMTP_PASS !== "" ? "(definida)" : "(vacía)");'
+
+mail-test:     ## Envía un correo de prueba. Uso: make mail-test TO=alguien@dominio.com
+	@test -n "$(TO)" || (echo "Falta TO. Uso: make mail-test TO=alguien@dominio.com"; exit 1)
+	@docker compose run --rm -T wpcli eval 'var_dump(wp_mail("$(TO)", "Prueba de envio - Landing Garantiza", "Correo de prueba enviado desde el sitio."));'
 
 debug-log:     ## Sigue el log de depuración de WordPress (fuera de la raíz web)
 	docker compose exec wordpress sh -c 'touch /tmp/wp-debug.log && tail -f /tmp/wp-debug.log'
