@@ -1,31 +1,7 @@
-# =============================================================================
-#  Landing Garantiza — stack de DESARROLLO sobre Docker Swarm + Traefik
-#
-#  Servidor de desarrollo (34.132.80.1), Swarm de un solo nodo.
-#  Objetivo: desarrollar sobre el mismo orquestador que usa producción,
-#  para que el entregable no se pruebe por primera vez en casa del cliente.
-#
-#  Diferencias respecto del stack de producción:
-#    - Imagen construida localmente (sin registry de GitLab)
-#    - Solo HTTP: sin dominio no hay certificado de Let's Encrypt
-#    - Sin secrets: las contraseñas siguen llegando por variables
-#    - Mantiene mailpit y el montaje en caliente del tema
-#
-#  Arranque:
-#     docker build -t landing-garantiza:dev ./php
-#     set -a && . ./.env && . ./.env.mail && set +a
-#     docker stack deploy -c docker-stack.dev.yml garantiza
-# =============================================================================
+
 version: "3.8"
 
 services:
-
-  # ---------------------------------------------------------------------------
-  # Traefik — proxy inverso. Sustituye a la publicación directa del puerto 80.
-  #
-  # En producción este servicio NO va en el stack: el Traefik de la
-  # organización ya existe y solo hay que unirse a su red.
-  # ---------------------------------------------------------------------------
   traefik:
     image: traefik:v3.1
     command:
@@ -53,7 +29,8 @@ services:
           - node.role == manager
       restart_policy:
         condition: on-failure
-
+    environment:
+      - DOCKER_API_VERSION=1.44
   # ---------------------------------------------------------------------------
   # Nginx — sirve estáticos y pasa PHP a php-fpm por FastCGI.
   #
