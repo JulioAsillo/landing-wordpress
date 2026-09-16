@@ -2,7 +2,7 @@
 Theme Name: Garantiza
 Description: Tema a medida para la landing informativa de Garantiza. Tema clásico, sin page builder ni framework CSS. Los tokens y el marcado replican la maqueta aprobada por el equipo de diseño.
 Author: Julio
-Version: 0.7.0
+Version: 0.7.1
 Requires at least: 6.5
 Requires PHP: 8.3
 License: GNU General Public License v2 or later
@@ -824,9 +824,11 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Columnas: equivalente a .gz-form-row */
 .gz-contact-form .fluentform .ff-t-container {
-	display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;
-	margin: 0;
+	display: grid !important; grid-template-columns: 1fr 1fr; gap: 0 1rem;
+	margin: 0; width: 100%;
 }
+.gz-contact-form .fluentform .ff-t-cell .ff-el-group { margin-bottom: 1.1rem; }
+.gz-contact-form .fluentform .ff-el-input--label { padding: 0; }
 .gz-contact-form .fluentform .ff-t-cell { width: auto !important; flex-basis: auto !important; padding: 0 !important; }
 
 /* Etiquetas */
@@ -835,14 +837,15 @@ button { font-family: inherit; cursor: pointer; }
 	font-size: .85rem; font-weight: 600; color: var(--gz-ink);
 	margin: 0; line-height: 1.3;
 }
-.gz-contact-form .fluentform .ff-el-is-required.asterisk-right label::after {
-	content: " *"; color: var(--gz-accent-deep); margin-left: 0;
-}
+/* La maqueta no marca los obligatorios: se valida igual, sin asterisco. */
+.gz-contact-form .fluentform .ff-el-is-required.asterisk-right label::after,
+.gz-contact-form .fluentform .ff-el-is-required.asterisk-left label::before { content: none; display: none; }
+.gz-contact-form .fluentform .ff-el-input--label.asterisk-left label { padding-left: 0; }
 
 /* Controles */
 .gz-contact-form .fluentform .ff-el-form-control {
-	width: 100%; min-height: 48px;
-	font-family: inherit; font-size: .98rem; line-height: 1.4;
+	width: 100%; height: auto; min-height: 0;
+	font-family: inherit; font-size: .98rem; line-height: 1.5;
 	padding: .75rem .9rem;
 	border-radius: var(--gz-radius-sm);
 	border: 1px solid var(--gz-line);
@@ -856,7 +859,7 @@ button { font-family: inherit; cursor: pointer; }
 	outline: 2px solid var(--gz-primary); outline-offset: 1px;
 	border-color: var(--gz-primary); box-shadow: none;
 }
-.gz-contact-form .fluentform textarea.ff-el-form-control { min-height: 110px; resize: vertical; }
+.gz-contact-form .fluentform textarea.ff-el-form-control { min-height: 90px; height: 90px; resize: vertical; }
 
 .gz-contact-form .fluentform select.ff-el-form-control {
 	appearance: none; -webkit-appearance: none;
@@ -873,13 +876,15 @@ button { font-family: inherit; cursor: pointer; }
 
 /* Consentimiento (GDPR / Ley 29733) */
 .gz-contact-form .fluentform .ff-el-form-check { margin-bottom: 0; }
+.gz-contact-form .fluentform .ff-el-tc,
+.gz-contact-form .fluentform .ff-el-group:has(.ff-el-form-check) { margin: .2rem 0 0; }
 .gz-contact-form .fluentform .ff-el-form-check-label {
-	display: flex; align-items: flex-start; gap: .6rem;
-	font-size: .85rem; line-height: 1.45; color: var(--gz-ink-soft);
+	display: flex; align-items: flex-start; gap: .5rem;
+	font-size: .8rem; line-height: 1.45; color: var(--gz-ink-soft);
 	cursor: pointer;
 }
 .gz-contact-form .fluentform .ff-el-form-check-input {
-	width: 18px; height: 18px; margin: .1rem 0 0; flex-shrink: 0;
+	width: 15px; height: 15px; margin: .12rem 0 0; flex-shrink: 0;
 	accent-color: var(--gz-primary);
 }
 .gz-contact-form .fluentform .ff-el-form-check-label a {
@@ -901,7 +906,11 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 /* Botón de envío = .gz-btn--primary */
-.gz-contact-form .fluentform .ff_submit_btn_wrapper { margin-top: 1.4rem; margin-bottom: 0; }
+.gz-contact-form .fluentform .ff_submit_btn_wrapper { margin-top: 1.1rem; margin-bottom: 0; }
+/* Nota bajo el botón = .form-note de la maqueta (texto en Custom HTML). */
+.gz-contact-form .fluentform .gz-ff-note,
+.gz-contact-form .fluentform .ff-custom_html .gz-ff-note { font-size: .8rem; color: var(--gz-ink-soft); margin: .8rem 0 0; }
+.gz-contact-form .fluentform .ff-el-group.ff-custom_html { margin-bottom: 0; }
 .gz-contact-form .fluentform .ff-btn-submit,
 .gz-contact-form .fluentform .ff-btn-submit:not(.ff_btn_no_style) {
 	width: 100%;
