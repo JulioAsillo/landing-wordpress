@@ -3,7 +3,7 @@ version: "3.8"
 
 services:
   traefik:
-    image: traefik:v3.X
+    image: traefik:v3.5.2
     command:
       - "--providers.swarm=true"
       - "--providers.swarm.exposedByDefault=false"
