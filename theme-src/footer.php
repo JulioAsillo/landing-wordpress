@@ -47,7 +47,7 @@ $gz_footer = gz_footer();
 						if ( $gz_link['url'] ) {
 							printf(
 								'<li><a href="%s">%s</a></li>',
-								esc_url( $gz_link['url'] ),
+								esc_url( gz_link_url( $gz_link['url'] ) ),
 								esc_html( $gz_link['label'] )
 							);
 						} else {
@@ -70,7 +70,7 @@ $gz_footer = gz_footer();
 		<?php if ( ! empty( $gz_footer['bottom'] ) ) : ?>
 			<ul>
 				<?php foreach ( $gz_footer['bottom'] as $gz_link ) : ?>
-					<li><a href="<?php echo esc_url( $gz_link['url'] ); ?>"><?php echo esc_html( $gz_link['label'] ); ?></a></li>
+					<li><a href="<?php echo esc_url( gz_link_url( $gz_link['url'] ) ); ?>"><?php echo esc_html( $gz_link['label'] ); ?></a></li>
 				<?php endforeach; ?>
 			</ul>
 		<?php endif; ?>

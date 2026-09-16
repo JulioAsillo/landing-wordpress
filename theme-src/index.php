@@ -11,8 +11,8 @@ get_header();
 			the_post();
 			?>
 			<article <?php post_class(); ?>>
-				<h1><?php the_title(); ?></h1>
-				<?php the_content(); ?>
+				<header class="gz-page__header"><h1><?php the_title(); ?></h1></header>
+				<div class="gz-prose"><?php the_content(); ?></div>
 			</article>
 			<?php
 		endwhile;

@@ -379,7 +379,7 @@ function gz_footer() {
 					'menu'  => '',
 					'links' => array(
 						array( 'label' => 'WhatsApp corporativo', 'url' => '#' ),
-						array( 'label' => 'contacto@garantiza.pe', 'url' => '#' ),
+						array( 'label' => 'contacto@garantiza.pe', 'url' => 'mailto:contacto@garantiza.pe' ),
 						array( 'label' => 'Lima, Perú', 'url' => '' ),
 						array( 'label' => 'Cobertura a nivel nacional', 'url' => '' ),
 					),
@@ -388,15 +388,15 @@ function gz_footer() {
 					'title' => 'Legal',
 					'menu'  => 'legal',
 					'links' => array(
-						array( 'label' => 'Política de privacidad', 'url' => '#' ),
-						array( 'label' => 'Libro de reclamaciones', 'url' => '#' ),
-						array( 'label' => 'Términos y condiciones', 'url' => '#' ),
+						array( 'label' => 'Política de privacidad', 'url' => gz_page_url( 'politica-de-privacidad' ) ),
+						array( 'label' => 'Libro de reclamaciones', 'url' => gz_page_url( 'libro-de-reclamaciones' ) ),
+						array( 'label' => 'Términos y condiciones', 'url' => gz_page_url( 'terminos-y-condiciones' ) ),
 					),
 				),
 			),
 			'bottom'  => array(
-				array( 'label' => 'Política de privacidad', 'url' => '#' ),
-				array( 'label' => 'Libro de reclamaciones', 'url' => '#' ),
+				array( 'label' => 'Política de privacidad', 'url' => gz_page_url( 'politica-de-privacidad' ) ),
+				array( 'label' => 'Libro de reclamaciones', 'url' => gz_page_url( 'libro-de-reclamaciones' ) ),
 			),
 		)
 	);

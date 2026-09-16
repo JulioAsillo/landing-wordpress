@@ -2,7 +2,7 @@
 Theme Name: Garantiza
 Description: Tema a medida para la landing informativa de Garantiza. Tema clásico, sin page builder ni framework CSS. Los tokens y el marcado replican la maqueta aprobada por el equipo de diseño.
 Author: Julio
-Version: 0.6.0
+Version: 0.7.0
 Requires at least: 6.5
 Requires PHP: 8.3
 License: GNU General Public License v2 or later
@@ -96,6 +96,20 @@ body {
 	line-height: 1.6;
 	-webkit-font-smoothing: antialiased;
 }
+
+/* Pie siempre abajo: en páginas cortas (política de privacidad, 404)
+   el main crece y empuja el footer al borde inferior del viewport. */
+body {
+	min-height: 100vh;
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+}
+body > main { flex: 1 0 auto; }
+body > .gz-footer { flex-shrink: 0; }
+
+/* Las anclas no quedan tapadas por la cabecera fija. */
+:target, [id] { scroll-margin-top: 88px; }
 
 img { max-width: 100%; display: block; }
 a { color: inherit; }
@@ -794,26 +808,144 @@ button { font-family: inherit; cursor: pointer; }
 .gz-form-note { font-size: .8rem; color: var(--gz-ink-soft); margin-top: .8rem; }
 .gz-contact-form .gz-btn { width: 100%; }
 
-/* Fluent Forms adopta el mismo lenguaje visual del formulario de la maqueta. */
-.gz-contact-form .ff-el-group { margin-bottom: 1.1rem; }
-.gz-contact-form .ff-el-input--label label {
-	font-size: .85rem; font-weight: 600; color: var(--gz-ink); margin-bottom: .4rem;
+/* -----------------------------------------------------------------------
+   10b. FLUENT FORMS
+   El formulario real replica el de la maqueta. Selectores con .fluentform
+   para ganar en especificidad a la hoja del plugin, que se imprime
+   después de la del tema.
+   Estructura esperada en el editor de Fluent Forms:
+     Container 2 col → Empresa / entidad | Tipo de entidad
+     Container 2 col → Nombre y cargo    | Teléfono
+     Correo corporativo · Cuéntanos sobre tu cartera · GDPR · Enviar
+   ----------------------------------------------------------------------- */
+
+.gz-contact-form .fluentform { font-family: var(--gz-font-body); color: var(--gz-ink); }
+.gz-contact-form .fluentform .ff-el-group { margin-bottom: 1.1rem; }
+
+/* Columnas: equivalente a .gz-form-row */
+.gz-contact-form .fluentform .ff-t-container {
+	display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem;
+	margin: 0;
 }
-.gz-contact-form .ff-el-form-control {
-	width: 100%; font-family: inherit; font-size: .98rem;
-	padding: .75rem .9rem; border-radius: var(--gz-radius-sm);
-	border: 1px solid var(--gz-line); background: #fff; color: var(--gz-ink);
+.gz-contact-form .fluentform .ff-t-cell { width: auto !important; flex-basis: auto !important; padding: 0 !important; }
+
+/* Etiquetas */
+.gz-contact-form .fluentform .ff-el-input--label { margin-bottom: .4rem; }
+.gz-contact-form .fluentform .ff-el-input--label label {
+	font-size: .85rem; font-weight: 600; color: var(--gz-ink);
+	margin: 0; line-height: 1.3;
+}
+.gz-contact-form .fluentform .ff-el-is-required.asterisk-right label::after {
+	content: " *"; color: var(--gz-accent-deep); margin-left: 0;
+}
+
+/* Controles */
+.gz-contact-form .fluentform .ff-el-form-control {
+	width: 100%; min-height: 48px;
+	font-family: inherit; font-size: .98rem; line-height: 1.4;
+	padding: .75rem .9rem;
+	border-radius: var(--gz-radius-sm);
+	border: 1px solid var(--gz-line);
+	background-color: #fff; color: var(--gz-ink);
 	box-shadow: none;
+	transition: border-color .15s ease, box-shadow .15s ease;
 }
-.gz-contact-form .ff-el-form-control:focus { outline: 2px solid var(--gz-primary); outline-offset: 1px; border-color: var(--gz-primary); }
-.gz-contact-form .ff-btn-submit {
+.gz-contact-form .fluentform .ff-el-form-control::placeholder { color: #8A9AAA; opacity: 1; }
+.gz-contact-form .fluentform .ff-el-form-control:hover { border-color: #C3D2E0; }
+.gz-contact-form .fluentform .ff-el-form-control:focus {
+	outline: 2px solid var(--gz-primary); outline-offset: 1px;
+	border-color: var(--gz-primary); box-shadow: none;
+}
+.gz-contact-form .fluentform textarea.ff-el-form-control { min-height: 110px; resize: vertical; }
+
+.gz-contact-form .fluentform select.ff-el-form-control {
+	appearance: none; -webkit-appearance: none;
+	padding-right: 2.5rem;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23073A5E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+	background-repeat: no-repeat;
+	background-position: right .9rem center;
+	background-size: 16px;
+}
+
+/* Teléfono con selector de país (intl-tel-input) */
+.gz-contact-form .fluentform .iti { width: 100%; }
+.gz-contact-form .fluentform .iti input.ff-el-form-control { padding-left: 3.4rem; }
+
+/* Consentimiento (GDPR / Ley 29733) */
+.gz-contact-form .fluentform .ff-el-form-check { margin-bottom: 0; }
+.gz-contact-form .fluentform .ff-el-form-check-label {
+	display: flex; align-items: flex-start; gap: .6rem;
+	font-size: .85rem; line-height: 1.45; color: var(--gz-ink-soft);
+	cursor: pointer;
+}
+.gz-contact-form .fluentform .ff-el-form-check-input {
+	width: 18px; height: 18px; margin: .1rem 0 0; flex-shrink: 0;
+	accent-color: var(--gz-primary);
+}
+.gz-contact-form .fluentform .ff-el-form-check-label a {
+	color: var(--gz-primary); font-weight: 600; text-underline-offset: 2px;
+}
+.gz-contact-form .fluentform .ff-el-tc label.ff_tc_label > span:first-child { margin-top: .1rem; }
+
+/* Errores de validación */
+.gz-contact-form .fluentform .ff-el-is-error .ff-el-form-control { border-color: #C8372D; }
+.gz-contact-form .fluentform .ff-el-is-error .text-danger,
+.gz-contact-form .fluentform .error.text-danger {
+	display: block; margin-top: .35rem;
+	font-size: .8rem; font-weight: 600; color: #C8372D;
+}
+.gz-contact-form .ff-errors-in-stack {
+	margin-top: 1rem; padding: .8rem 1rem;
+	border-radius: var(--gz-radius-sm);
+	background: #FDECEA; color: #8E2A22; font-size: .88rem;
+}
+
+/* Botón de envío = .gz-btn--primary */
+.gz-contact-form .fluentform .ff_submit_btn_wrapper { margin-top: 1.4rem; margin-bottom: 0; }
+.gz-contact-form .fluentform .ff-btn-submit,
+.gz-contact-form .fluentform .ff-btn-submit:not(.ff_btn_no_style) {
 	width: 100%;
+	display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
 	font-family: var(--gz-font-display); font-weight: 700; font-size: 1.05rem;
 	padding: .9rem 1.7rem; border: 2px solid transparent;
 	border-radius: var(--gz-radius-sm);
-	background: var(--gz-accent); color: var(--gz-primary-deep);
+	background-color: var(--gz-accent); color: var(--gz-primary-deep);
+	box-shadow: none; opacity: 1;
+	transition: transform .15s ease, box-shadow .15s ease, background-color .15s ease;
 }
-.gz-contact-form .ff-btn-submit:hover { background: #FFB840; }
+.gz-contact-form .fluentform .ff-btn-submit:hover {
+	background-color: #FFB840; color: var(--gz-primary-deep);
+	box-shadow: 0 10px 22px -8px rgba(248, 164, 26, .55);
+}
+.gz-contact-form .fluentform .ff-btn-submit:active { transform: translateY(1px); }
+.gz-contact-form .fluentform .ff-btn-submit.disabled,
+.gz-contact-form .fluentform .ff-btn-submit[disabled] { opacity: .65; cursor: progress; }
+.gz-contact-form .fluentform .ff-loading::after { border-color: var(--gz-primary-deep) transparent var(--gz-primary-deep) transparent; }
+
+/* Mensaje de éxito: Fluent Forms reemplaza el formulario por este bloque.
+   El HTML va en Confirmation Settings: <div class="ff-success">…</div> */
+.gz-contact-form .ff-message-success {
+	border: 0; box-shadow: none; padding: 0; margin: 0;
+	background: transparent;
+}
+.gz-contact-form .ff-success {
+	text-align: center;
+	padding: clamp(1.5rem, 3vw, 2.5rem) 1rem;
+}
+.gz-contact-form .ff-success::before {
+	content: "";
+	display: block; width: 64px; height: 64px; margin: 0 auto 1.2rem;
+	border-radius: 50%;
+	background: var(--gz-tint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230571BD' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") center / 30px no-repeat;
+}
+.gz-contact-form .ff-success h3 {
+	font-size: 1.6rem; color: var(--gz-primary-dark); margin-bottom: .6rem;
+}
+.gz-contact-form .ff-success p { max-width: 38ch; margin: 0 auto; color: var(--gz-ink-soft); }
+
+@media (max-width: 560px) {
+	.gz-contact-form .fluentform .ff-t-container { grid-template-columns: 1fr; }
+}
 
 @media (max-width: 900px) { .gz-contact__grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .gz-form-row { grid-template-columns: 1fr; } }
@@ -883,3 +1015,39 @@ button { font-family: inherit; cursor: pointer; }
 .gz-page { padding-block: var(--gz-sp-xl); }
 .gz-page h1 { font-size: var(--gz-fs-h2); color: var(--gz-primary-dark); }
 .gz-page__lead { font-size: var(--gz-fs-large); }
+
+/* Contenido editable desde el editor (política de privacidad, términos).
+   Solo tipografía: no se cargan los estilos de bloques en el front. */
+.gz-page { width: 100%; }
+.gz-page__header {
+	padding-bottom: var(--gz-sp-md); margin-bottom: var(--gz-sp-lg);
+	border-bottom: 1px solid var(--gz-line);
+}
+.gz-page__header h1 { margin-bottom: 0; }
+.gz-page__header .gz-kicker { margin-bottom: .6rem; }
+
+.gz-prose { max-width: 72ch; }
+.gz-prose > * + * { margin-top: 1em; }
+.gz-prose h2 { font-size: 1.7rem; color: var(--gz-primary-dark); margin: 2.2rem 0 .6rem; }
+.gz-prose h3 { font-size: 1.3rem; color: var(--gz-primary-dark); margin: 1.8rem 0 .5rem; }
+.gz-prose h4 { font-size: 1.1rem; margin: 1.5rem 0 .4rem; }
+.gz-prose p, .gz-prose li { color: var(--gz-ink-soft); }
+.gz-prose ul, .gz-prose ol { padding-left: 1.3rem; margin: 0 0 1em; }
+.gz-prose li + li { margin-top: .35rem; }
+.gz-prose li::marker { color: var(--gz-primary); }
+.gz-prose a { color: var(--gz-primary); font-weight: 600; text-underline-offset: 2px; }
+.gz-prose a:hover { color: var(--gz-primary-dark); }
+.gz-prose strong { color: var(--gz-ink); }
+.gz-prose blockquote {
+	margin: 1.5rem 0; padding: 1rem 1.3rem;
+	border-left: 4px solid var(--gz-accent);
+	background: var(--gz-surface); border-radius: 0 var(--gz-radius-sm) var(--gz-radius-sm) 0;
+}
+.gz-prose table { width: 100%; border-collapse: collapse; font-size: .95rem; display: block; overflow-x: auto; }
+.gz-prose th, .gz-prose td { padding: .7rem .9rem; border: 1px solid var(--gz-line); text-align: left; }
+.gz-prose th { background: var(--gz-tint); color: var(--gz-primary-dark); }
+.gz-prose img { height: auto; border-radius: var(--gz-radius-sm); }
+.gz-prose hr { border: 0; border-top: 1px solid var(--gz-line); margin: 2rem 0; }
+
+/* Una página con Fluent Forms embebido fuera de la portada. */
+.gz-prose .fluentform { max-width: 560px; }

@@ -116,7 +116,7 @@ $form_id   = (int) get_theme_mod( 'gz_form_id', 0 );
 								<p><?php echo esc_html( $item['text'] ); ?></p>
 							<?php endif; ?>
 							<?php if ( ! empty( $item['link_label'] ) ) : ?>
-								<a class="gz-contact-info__link" href="<?php echo esc_url( $item['link_url'] ); ?>">
+								<a class="gz-contact-info__link" href="<?php echo esc_url( gz_link_url( $item['link_url'] ) ); ?>">
 									<?php echo esc_html( $item['link_label'] ); ?>
 									<?php echo gz_icon( 'arrow-right' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 								</a>

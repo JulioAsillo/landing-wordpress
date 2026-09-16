@@ -43,7 +43,7 @@
 				foreach ( gz_nav_fallback_links() as $link ) {
 					printf(
 						'<li><a href="%s">%s</a></li>',
-						esc_url( $link['url'] ),
+						esc_url( gz_link_url( $link['url'] ) ),
 						esc_html( $link['label'] )
 					);
 				}
@@ -53,7 +53,7 @@
 		</nav>
 
 		<div class="gz-header__actions">
-			<a class="gz-btn gz-btn--outline" href="#contacto">
+			<a class="gz-btn gz-btn--outline" href="<?php echo esc_url( gz_link_url( '#contacto' ) ); ?>">
 				<?php esc_html_e( 'Solicita información', 'garantiza' ); ?>
 			</a>
 			<button class="gz-nav-toggle" type="button"

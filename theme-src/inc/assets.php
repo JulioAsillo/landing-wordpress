@@ -10,7 +10,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Familias que usa la maqueta y pesos realmente utilizados.
  * Barlow: 400 (cuerpo), 600 (etiquetas y navegación), 700 (destacados).
- * Barlow Condensed: 600 (cita del hero), 700 (todos los títulos).
+ * Barlow Condensed: 600 cursiva (cita del hero), 600 y 700 (títulos).
+ * Subconjunto latin de @fontsource 5.3.0 (cubre tildes, ñ, ¿, ¡, — y …).
  */
 function gz_font_files() {
 	return array(
@@ -19,6 +20,7 @@ function gz_font_files() {
 		'barlow-700.woff2',
 		'barlow-condensed-600.woff2',
 		'barlow-condensed-700.woff2',
+		'barlow-condensed-600-italic.woff2',
 	);
 }
 
@@ -97,6 +99,7 @@ add_action(
 			array( 'Barlow', 700, 'normal', 'barlow-700.woff2' ),
 			array( 'Barlow Condensed', 600, 'normal', 'barlow-condensed-600.woff2' ),
 			array( 'Barlow Condensed', 700, 'normal', 'barlow-condensed-700.woff2' ),
+			array( 'Barlow Condensed', 600, 'italic', 'barlow-condensed-600-italic.woff2' ),
 		);
 
 		echo "<style id=\"garantiza-fonts\">\n";
