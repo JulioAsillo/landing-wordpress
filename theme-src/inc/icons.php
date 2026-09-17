@@ -59,27 +59,24 @@ function gz_icon( $name, $class = '' ) {
 }
 
 /**
- * Isotipo + logotipo de Garantiza.
+ * Logotipo oficial de Garantiza (SVG aprobado por el cliente).
  *
- * Se usa cuando el cliente todavía no ha subido su logo por el
- * personalizador. Cuando lo suba, `the_custom_logo()` lo sustituye.
+ * Se usa cuando no hay logo subido por el personalizador. Cuando lo
+ * suba, `the_custom_logo()` lo sustituye en la cabecera.
  *
- * @param bool $on_dark Variante para fondos oscuros (pie de página).
+ * @param bool $on_dark Variante con texto blanco para fondos oscuros (pie).
  * @return string
  */
 function gz_logo( $on_dark = false ) {
+	$file = $on_dark ? 'logo-garantiza-blanco.svg' : 'logo-garantiza.svg';
+	$src  = get_template_directory_uri() . '/assets/img/' . $file;
 	ob_start();
 	?>
 	<a class="gz-logo<?php echo $on_dark ? ' gz-logo--on-dark' : ''; ?>"
 	   href="<?php echo esc_url( home_url( '/' ) ); ?>"
 	   aria-label="<?php echo esc_attr( sprintf( '%s — inicio', get_bloginfo( 'name' ) ) ); ?>">
-		<svg class="gz-logo__mark" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-			<rect width="48" height="48" rx="13" fill="#F8A41A"/>
-			<path d="M16 32V19a3 3 0 0 1 3-3h5" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-			<path d="M17 31h14V17" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-			<path d="M23 17h8v8" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
-		</svg>
-		<span class="gz-logo__word"><?php bloginfo( 'name' ); ?></span>
+		<img class="gz-logo__img" src="<?php echo esc_url( $src ); ?>"
+		     alt="<?php bloginfo( 'name' ); ?>" width="218" height="40" decoding="async">
 	</a>
 	<?php
 	return (string) ob_get_clean();

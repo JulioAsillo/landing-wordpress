@@ -33,3 +33,19 @@ add_action(
 if ( ! defined( 'DISALLOW_FILE_EDIT' ) ) {
 	define( 'DISALLOW_FILE_EDIT', true );
 }
+
+/**
+ * Favicon con el isotipo oficial mientras no se configure
+ * un "Icono del sitio" desde el personalizador.
+ */
+add_action(
+	'wp_head',
+	function () {
+		if ( has_site_icon() ) {
+			return;
+		}
+		$icon = get_template_directory_uri() . '/assets/img/isotipo-garantiza.svg';
+		printf( '<link rel="icon" type="image/svg+xml" href="%s">' . "\n", esc_url( $icon ) );
+	},
+	2
+);

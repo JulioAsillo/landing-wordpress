@@ -208,16 +208,14 @@ button { font-family: inherit; cursor: pointer; }
 .gz-btn--outline { background: transparent; border-color: var(--gz-primary); color: var(--gz-primary); }
 .gz-btn--outline:hover { background: var(--gz-tint); }
 
-/* Isotipo + logotipo */
-.gz-logo { display: inline-flex; align-items: center; gap: .6rem; text-decoration: none; }
-.gz-logo__mark { width: 38px; height: 38px; flex-shrink: 0; }
-.gz-logo__word {
-	font-family: var(--gz-font-display);
-	font-weight: 700; font-size: 1.4rem;
-	color: var(--gz-primary);
+/* Logotipo oficial (SVG) */
+.gz-logo { display: inline-flex; align-items: center; text-decoration: none; line-height: 0; flex-shrink: 0; }
+.gz-logo img,
+.gz-logo__img { display: block; height: 40px; width: auto; max-width: 100%; }
+.gz-footer .gz-logo img { height: 44px; }
+@media (max-width: 600px) {
+	.gz-logo img, .gz-logo__img { height: 32px; }
 }
-.gz-logo--on-dark .gz-logo__word { color: #fff; }
-.gz-logo img { max-height: 48px; width: auto; }
 
 /* =======================================================================
    4. CABECERA
