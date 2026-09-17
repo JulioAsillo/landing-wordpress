@@ -1,18 +1,4 @@
 #!/usr/bin/env bash
-# =============================================================================
-#  Genera el contenido inicial de producción a partir de la base de
-#  desarrollo, SIN tocarla: trabaja sobre una copia temporal (gz_golden).
-#
-#  Ejecutar en el servidor de desarrollo, con el stack de Compose arriba:
-#      ./scripts/generar-dump-limpio.sh
-#
-#  La copia queda sin: registros de formularios, usuarios de desarrollo,
-#  páginas de prueba, entradas y comentarios de ejemplo, revisiones, URL de
-#  desarrollo ni sesiones. Conserva: formularios (con sus notificaciones e
-#  IDs), páginas legales, ajustes del tema, permalinks y ajustes de plugins.
-#
-#  Resultado: produccion/db/garantiza-golden.sql.gz
-# =============================================================================
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -77,14 +63,14 @@ done
 
 echo "==> 5/6 URL de producción y ajustes"
 for u in "${URLS_DEV[@]}"; do
-    wpg search-replace "$u" "$URL_PROD" --all-tables-with-prefix --skip-columns=guid --report-changed-only || true
+    wpg search-replace "$u" "$URL_PROD" --all-tables-with-prefix --report-changed-only || true
 done
 wpg option update admin_email "provisional@garantiza.pe" >/dev/null
 wpg option delete new_admin_email >/dev/null || true
 wpg option update blog_public 1 >/dev/null
 wpg option delete gz_provisionado >/dev/null || true
 wpg option delete gz_retencion_ultima >/dev/null || true
-wpg transient delete --all >/dev/null || true
+wpg transient delete --all --network >/dev/null || true
 
 echo "==> 6/6 Exportando"
 mkdir -p "$(dirname "$SALIDA")"
