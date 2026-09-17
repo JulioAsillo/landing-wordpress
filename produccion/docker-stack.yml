@@ -1,0 +1,166 @@
+# =============================================================================
+#  Landing Garantiza — Docker Swarm + Traefik (producción)
+#
+#  No se despliega a mano: usar ./desplegar.sh, que carga garantiza.env
+#  (docker stack deploy NO lee archivos .env por sí solo).
+#
+#  Qué persiste:   db_data (base de datos)  y  uploads (archivos subidos).
+#  Qué NO persiste: WordPress, tema y plugins viajan dentro de la imagen.
+#                   Se actualizan publicando una versión nueva de la imagen.
+# =============================================================================
+version: "3.8"
+
+x-comun: &comun
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+x-deploy: &deploy
+  replicas: 1
+  placement:
+    # Los volúmenes son locales al nodo: todo el stack corre en el nodo
+    # etiquetado (paso 4 del manual). Con un solo nodo también aplica.
+    constraints: [ "node.labels.garantiza == true" ]
+  restart_policy: { condition: any, delay: 5s }
+
+services:
+
+  # Único servicio publicado: Traefik enruta hacia aquí.
+  nginx:
+    <<: *comun
+    image: ${GZ_IMAGE_PREFIX}garantiza-nginx:${GZ_VERSION}
+    volumes:
+      - uploads:/var/www/html/wp-content/uploads:ro
+    networks: [ proxy, interna ]
+    deploy:
+      <<: *deploy
+      resources: { limits: { memory: 128M } }
+      # En Swarm los labels de Traefik van bajo deploy.labels.
+      labels:
+        - "traefik.enable=true"
+        # Se declaran ambos para cubrir Traefik v2 (docker) y v3 (swarm).
+        - "traefik.docker.network=${TRAEFIK_NETWORK}"
+        - "traefik.swarm.network=${TRAEFIK_NETWORK}"
+        - "traefik.http.routers.garantiza.rule=Host(`${GZ_DOMINIO}`)"
+        - "traefik.http.routers.garantiza.entrypoints=${TRAEFIK_ENTRYPOINT}"
+        - "traefik.http.routers.garantiza.tls=true"
+        - "traefik.http.routers.garantiza.tls.certresolver=${TRAEFIK_CERTRESOLVER}"
+        - "traefik.http.services.garantiza.loadbalancer.server.port=80"
+        # --- Opcional: www -> dominio principal. Activar SOLO si existe el
+        # registro DNS de www; si no, Let's Encrypt no podrá emitir el
+        # certificado. Requiere añadir  || Host(`www.${GZ_DOMINIO}`)  a la regla.
+        # - "traefik.http.routers.garantiza.middlewares=garantiza-www"
+        # - "traefik.http.middlewares.garantiza-www.redirectregex.regex=^https?://www\\.(.+)"
+        # - "traefik.http.middlewares.garantiza-www.redirectregex.replacement=https://$${1}"
+        # - "traefik.http.middlewares.garantiza-www.redirectregex.permanent=true"
+
+  wordpress:
+    <<: *comun
+    image: ${GZ_IMAGE_PREFIX}garantiza-wp:${GZ_VERSION}
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: garantiza
+      WORDPRESS_DB_USER: garantiza
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/gz_db_password
+
+      GZ_URL: ${GZ_URL}
+      GZ_ADMIN_USER: ${GZ_ADMIN_USER}
+      GZ_ADMIN_EMAIL: ${GZ_ADMIN_EMAIL}
+      GZ_INDEXAR: ${GZ_INDEXAR:-1}
+      GZ_RETENCION_ANIOS: ${GZ_RETENCION_ANIOS:-5}
+
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_ENCRYPTION: ${SMTP_ENCRYPTION}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Garantiza}
+
+      # "$$" es un "$" literal: evita que Docker intente interpolarlo.
+      WORDPRESS_CONFIG_EXTRA: |
+        // El TLS termina en Traefik; WordPress debe saber que la visita es HTTPS.
+        if ( isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https' ) {
+            $$_SERVER['HTTPS'] = 'on';
+        }
+        define('WP_HOME', getenv('GZ_URL'));
+        define('WP_SITEURL', getenv('GZ_URL'));
+
+        define('WP_DEBUG_DISPLAY', false);
+        // El código es inmutable: ni edición de archivos ni instalación o
+        // actualización desde el panel. Todo cambio llega como imagen nueva.
+        define('DISALLOW_FILE_EDIT', true);
+        define('DISALLOW_FILE_MODS', true);
+        define('AUTOMATIC_UPDATER_DISABLED', true);
+
+        // Correo saliente (WP Mail SMTP). La contraseña se lee del secret.
+        define('WPMS_ON', true);
+        define('WPMS_MAILER', 'smtp');
+        define('WPMS_SMTP_HOST', getenv('SMTP_HOST'));
+        define('WPMS_SMTP_PORT', (int) getenv('SMTP_PORT'));
+        define('WPMS_SSL', getenv('SMTP_ENCRYPTION') ?: '');
+        define('WPMS_SMTP_AUTH', true);
+        define('WPMS_SMTP_USER', getenv('SMTP_USER'));
+        define('WPMS_SMTP_PASS', trim((string) @file_get_contents('/run/secrets/smtp_password')));
+        define('WPMS_MAIL_FROM', getenv('SMTP_FROM'));
+        define('WPMS_MAIL_FROM_NAME', getenv('SMTP_FROM_NAME') ?: 'Garantiza');
+        define('WPMS_MAIL_FROM_FORCE', true);
+        define('WPMS_MAIL_FROM_NAME_FORCE', true);
+    secrets:
+      - gz_db_password
+      - source: gz_smtp_password
+        target: smtp_password
+    volumes:
+      - uploads:/var/www/html/wp-content/uploads
+    networks: [ interna ]
+    deploy:
+      <<: *deploy
+      resources: { limits: { memory: 512M } }
+
+  db:
+    <<: *comun
+    image: ${GZ_IMAGE_PREFIX}garantiza-db:${GZ_VERSION}
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=256M
+    environment:
+      MYSQL_DATABASE: garantiza
+      MYSQL_USER: garantiza
+      MYSQL_PASSWORD_FILE: /run/secrets/gz_db_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/gz_db_root_password
+    secrets: [ gz_db_password, gz_db_root_password ]
+    volumes:
+      - db_data:/var/lib/mysql
+    networks: [ interna ]
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    deploy:
+      <<: *deploy
+      resources: { limits: { memory: 1G } }
+
+# Los secrets se crean ANTES del despliegue con ./crear-secrets.sh.
+# Viven cifrados en Swarm; no se escriben en ningún archivo.
+secrets:
+  gz_db_password:
+    external: true
+  gz_db_root_password:
+    external: true
+  gz_smtp_password:
+    external: true
+    # Variable para poder rotar la clave SMTP (los secrets son inmutables).
+    name: ${GZ_SECRET_SMTP:-gz_smtp_password}
+
+volumes:
+  db_data:
+  uploads:
+
+networks:
+  proxy:
+    external: true
+    name: ${TRAEFIK_NETWORK}
+  interna:
+    driver: overlay

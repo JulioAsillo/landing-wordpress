@@ -3,3 +3,10 @@
 backups/
 node_modules/
 *.log
+.idea/
+deploy/build/
+entrega/
+.idea/
+entrega/
+# Contenido inicial de producción: se genera, no se versiona
+produccion/db/*.sql.gz

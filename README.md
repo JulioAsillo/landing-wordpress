@@ -60,3 +60,22 @@ make wp CMD="plugin install wp-mail-smtp fluentform webp-express --activate"
 ## Notas sobre producción
 
 Este entorno replica el stack declarado en la ficha técnica. Cuando el cliente confirme las versiones de su servidor de destino, se ajustan las etiquetas de imagen en `docker-compose.yml` y `php/Dockerfile` y se reconstruye. Si su base de datos resulta ser MariaDB en lugar de MySQL, basta cambiar la imagen del servicio `db`.
+
+## Empaquetado para producción
+
+El cliente despliega por su cuenta, sin acceso del desarrollador. Todo lo de producción vive en `produccion/` y no afecta al entorno de desarrollo.
+
+```bash
+./scripts/generar-dump-limpio.sh     # contenido inicial limpio, a partir de la base de desarrollo
+./scripts/empaquetar.sh 1.0.0        # imágenes + fuente + scripts + manual -> entrega/garantiza-1.0.0/
+```
+
+| Ruta | Qué es |
+| --- | --- |
+| `produccion/Dockerfile` | Tres imágenes inmutables: `wp`, `nginx` y `db` |
+| `produccion/docker-stack.yml` | Stack de Swarm + Traefik, con secrets |
+| `produccion/MANUAL-DESPLIEGUE.md` | Manual para el área de infraestructura del cliente |
+| `mu-plugins/gz-retencion.php` | Eliminación automática de registros a los 5 años |
+| `.gitlab-ci.yml` | Construcción de las imágenes en el GitLab del cliente |
+
+Antes de entregar, ensayar el despliegue completo en este servidor siguiendo solo el manual (ver `produccion/docker-stack.ensayo.yml`).

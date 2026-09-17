@@ -1,0 +1,10 @@
+.git
+.idea
+.env
+.env.*
+!.env.example
+!.env.mail.example
+backups
+entrega
+node_modules
+*.log

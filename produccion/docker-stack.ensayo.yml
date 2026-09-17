@@ -1,0 +1,12 @@
+# Solo para ENSAYAR el despliegue sin Traefik (por ejemplo, en el servidor
+# de desarrollo). Publica Nginx en el puerto 8080.
+#
+#   docker network create -d overlay --attachable gz-ensayo-proxy
+#   (en garantiza.env: TRAEFIK_NETWORK=gz-ensayo-proxy, GZ_URL=http://localhost:8080)
+#   ./desplegar.sh -c docker-stack.ensayo.yml
+#   Acceso por túnel SSH:  ssh -L 8080:localhost:8080 usuario@servidor
+version: "3.8"
+services:
+  nginx:
+    ports:
+      - "8080:80"

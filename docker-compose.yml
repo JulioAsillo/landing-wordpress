@@ -73,6 +73,8 @@ services:
       - wp_data:/var/www/html
       # El tema se edita desde el host y se refleja en caliente
       - ./theme-src:/var/www/html/wp-content/themes/landing
+      # Retención de datos (mismo código que viaja en la imagen de producción)
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     restart: unless-stopped
     networks: [landing]
 
@@ -142,6 +144,7 @@ services:
     volumes:
       - wp_data:/var/www/html
       - ./theme-src:/var/www/html/wp-content/themes/landing
+      - ./mu-plugins:/var/www/html/wp-content/mu-plugins:ro
     entrypoint: wp
     profiles: ["cli"]
     networks: [landing]
