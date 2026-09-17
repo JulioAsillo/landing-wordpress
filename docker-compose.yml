@@ -37,7 +37,9 @@ services:
     # Compose (admite caracteres como $ sin escaparlos) ni se escribe
     # en ningún archivo versionado.
     env_file:
-      - .env.mail
+      - .env
+      - path: .env.mail
+        format: raw
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_NAME: ${DB_NAME}
