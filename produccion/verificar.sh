@@ -32,6 +32,26 @@ html="$(curl -k -s --max-time 20 "$GZ_URL/")"
 echo "$html" | grep -q 'fluentform' && ok "El formulario de contacto está en la portada" || mal "No se encontró el formulario en la portada"
 echo "$html" | grep -Eq '34\.132\.80\.1|novaly' && mal "Hay referencias al entorno de desarrollo en la portada" || ok "Sin referencias al entorno de desarrollo"
 
+# --- Indexación y SEO (QA BUG-008 y BUG-009) -------------------------------
+# En desarrollo el sitio va con blog_public=0 y sale "noindex, nofollow".
+# Aquí se comprueba que el paquete de producción llega indexable y con el
+# título y la descripción correctos, que es donde se levantan esas dos
+# observaciones.
+echo "$html" | grep -qi 'name="robots"[^>]*noindex' \
+    && mal "La portada sale con noindex: revisar GZ_INDEXAR en garantiza.env" \
+    || ok "La portada es indexable (sin noindex)"
+
+titulo="$(printf '%s' "$html" | tr -d '\n' | sed -n 's/.*<title>\(.*\)<\/title>.*/\1/p')"
+if [ "${#titulo}" -ge 30 ]; then
+    ok "Título del documento (${#titulo} caracteres): $titulo"
+else
+    mal "Título demasiado corto o ausente: '${titulo}'"
+fi
+
+echo "$html" | grep -qi '<meta name="description"' \
+    && ok "Meta description presente" \
+    || mal "Falta la meta description en la portada"
+
 if [ "${1:-}" = "--correo" ] && [ -n "${2:-}" ]; then
     echo "Correo:"
     c="$(docker ps -q -f label=com.docker.swarm.service.name=garantiza_wordpress | head -1)"

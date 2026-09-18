@@ -270,15 +270,35 @@ button { font-family: inherit; cursor: pointer; }
 }
 
 @media (max-width: 900px) {
+	/* El panel cuelga de la cabecera (position: sticky ya es su bloque
+	   contenedor), así que arranca siempre justo debajo del borde
+	   inferior, mida lo que mida la cabecera. Antes se usaba un
+	   inset fijo de 64 px que no coincidía con la altura real y dejaba
+	   los enlaces fuera del panel blanco (QA BUG-007). */
 	.gz-nav {
-		position: fixed; inset: 64px 0 0 0; background: #fff;
-		padding: var(--gz-sp-lg) var(--gz-sp-md);
+		position: absolute; top: 100%; left: 0; right: 0;
+		background: #fff;
+		border-bottom: 1px solid var(--gz-line);
+		box-shadow: 0 18px 30px -24px rgba(7, 58, 94, .5);
+		padding: var(--gz-sp-md);
+		/* La altura la marca el contenido; si no cabe, el panel hace
+		   scroll en lugar de desbordar sobre el hero. */
+		max-height: calc(100vh - 100%);
+		max-height: calc(100dvh - 100%);
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
 		transform: translateY(-8px); opacity: 0; pointer-events: none;
 		transition: opacity .2s ease, transform .2s ease;
 	}
 	.gz-nav.is-open { opacity: 1; transform: translateY(0); pointer-events: auto; }
-	.gz-nav ul { flex-direction: column; align-items: flex-start; gap: 1.4rem; }
-	.gz-nav a { font-size: 1.3rem; }
+	.gz-nav ul {
+		flex-direction: column; align-items: stretch;
+		gap: 0;
+	}
+	.gz-nav li + li { border-top: 1px solid var(--gz-line); }
+	/* Área táctil completa: el enlace ocupa toda la fila del panel. */
+	.gz-nav a { display: block; font-size: 1.15rem; padding-block: .95rem; }
+	.gz-nav a::after { display: none; }
 	.gz-header__actions .gz-btn--outline { display: none; }
 	.gz-nav-toggle { display: block; }
 }
