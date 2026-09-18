@@ -224,6 +224,7 @@ button { font-family: inherit; cursor: pointer; }
 .gz-header {
 	position: sticky; top: 0; z-index: 60;
 	background: rgba(255, 255, 255, .92);
+	-webkit-backdrop-filter: blur(10px);
 	backdrop-filter: blur(10px);
 	border-bottom: 1px solid transparent;
 	transition: border-color .2s ease, box-shadow .2s ease;
@@ -283,8 +284,8 @@ button { font-family: inherit; cursor: pointer; }
 		padding: var(--gz-sp-md);
 		/* La altura la marca el contenido; si no cabe, el panel hace
 		   scroll en lugar de desbordar sobre el hero. */
-		max-height: calc(100vh - 100%);
-		max-height: calc(100dvh - 100%);
+		max-height: 70vh;
+		max-height: 70dvh;
 		overflow-y: auto;
 		-webkit-overflow-scrolling: touch;
 		transform: translateY(-8px); opacity: 0; pointer-events: none;
@@ -301,6 +302,18 @@ button { font-family: inherit; cursor: pointer; }
 	.gz-nav a::after { display: none; }
 	.gz-header__actions .gz-btn--outline { display: none; }
 	.gz-nav-toggle { display: block; }
+
+	/* Cabecera opaca y sin desenfoque en móvil.
+	   backdrop-filter sobre un elemento sticky obliga al navegador a
+	   promover la cabecera a su propia capa de composición, y en pantallas
+	   pequeñas eso hace que quede desalineada o con el contenido anterior
+	   durante el desplazamiento. Sin desenfoque no hay capa que actualizar
+	   y la cabecera se mantiene pegada arriba. */
+	.gz-header {
+		background: #fff;
+		-webkit-backdrop-filter: none;
+		backdrop-filter: none;
+	}
 }
 
 /* =======================================================================
