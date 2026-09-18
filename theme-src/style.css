@@ -1122,3 +1122,26 @@ button { font-family: inherit; cursor: pointer; }
 @media (max-width: 900px) {
 	.gz-claims__types { grid-template-columns: 1fr; }
 }
+
+/* =======================================================================
+   13. FORMULARIOS: AVISOS DE ENVÍO
+   Refuerzos de QA sobre Fluent Forms (BUG-005).
+   ==================================================================== */
+
+/* Aviso propio cuando el envío no llega a salir (sin conexión). */
+.gz-form-aviso {
+	margin-top: 1rem; padding: .85rem 1rem;
+	border-radius: var(--gz-radius-sm, 8px);
+	background: #fdecec; border: 1px solid #f3b9b9; color: #8a1f1f;
+	font-size: .95rem; line-height: 1.45;
+}
+
+/* Si el servidor responde con una página completa en lugar de JSON, el
+   plugin la inyecta tal cual en el recuadro de errores. Acotarlo evita
+   que una respuesta inesperada rompa la maqueta del formulario. */
+.ff-errors-in-stack {
+	max-height: 12rem; overflow: auto;
+	overflow-wrap: anywhere;
+}
+.ff-errors-in-stack :is(html, body, head, style, script, header, footer, nav) { display: none !important; }
+.ff-errors-in-stack img { max-width: 100%; height: auto; }

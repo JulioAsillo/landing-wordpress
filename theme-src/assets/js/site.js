@@ -157,6 +157,55 @@
 	 * Todavía no hay Fluent Forms conectado: se avisa en lugar de
 	 * recargar la página sin hacer nada.
 	 * ----------------------------------------------------------- */
+	/* --------------------------------------------------------------
+	 * Formularios de Fluent Forms
+	 * Dos refuerzos de QA que la versión gratuita no permite
+	 * configurar desde el panel:
+	 *   - el teléfono acepta solo dígitos y corta en 9 (BUG-001);
+	 *   - sin conexión se avisa en lugar de dejar el botón como si
+	 *     no hubiera pasado nada (BUG-005).
+	 * ----------------------------------------------------------- */
+	var LIMITE_TELEFONO = 9;
+
+	function esCampoTelefono(el) {
+		if (!el || el.tagName !== 'INPUT') { return false; }
+		var nombre = (el.getAttribute('name') || '').toLowerCase();
+		return /telefono|tel[eé]fono|phone|celular|m[oó]vil/.test(nombre);
+	}
+
+	document.addEventListener('input', function (e) {
+		if (!esCampoTelefono(e.target)) { return; }
+		var limpio = e.target.value.replace(/\D/g, '').slice(0, LIMITE_TELEFONO);
+		if (e.target.value !== limpio) { e.target.value = limpio; }
+	});
+
+	function avisoDeFormulario(form, texto) {
+		var aviso = form.querySelector('.gz-form-aviso');
+		if (!aviso) {
+			aviso = document.createElement('p');
+			aviso.className = 'gz-form-aviso';
+			aviso.setAttribute('role', 'alert');
+			form.appendChild(aviso);
+		}
+		aviso.textContent = texto;
+	}
+
+	// Fase de captura: corre antes del envío del plugin.
+	document.addEventListener('submit', function (e) {
+		var form = e.target;
+		if (!form || !form.classList || !form.classList.contains('frm-fluent-form')) { return; }
+
+		if (navigator.onLine === false) {
+			e.preventDefault();
+			e.stopPropagation();
+			avisoDeFormulario(form, 'No hay conexión a internet. Tus datos siguen aquí: vuelve a intentarlo cuando se restablezca.');
+			return;
+		}
+
+		var aviso = form.querySelector('.gz-form-aviso');
+		if (aviso) { aviso.remove(); }
+	}, true);
+
 	var preview = document.querySelector('[data-form-preview]');
 
 	if (preview) {
