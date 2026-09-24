@@ -140,24 +140,5 @@ add_action(
 				'type'        => 'number',
 			)
 		);
-
-		$wp_customize->add_setting(
-			'gz_claims_form_id',
-			array(
-				'default'           => 0,
-				'sanitize_callback' => 'absint',
-				'transport'         => 'refresh',
-			)
-		);
-
-		$wp_customize->add_control(
-			'gz_claims_form_id',
-			array(
-				'label'       => __( 'ID del formulario del Libro de Reclamaciones', 'garantiza' ),
-				'description' => __( 'Se muestra en la página con slug libro-de-reclamaciones. En 0 se usa el contenido de la página.', 'garantiza' ),
-				'section'     => 'gz_landing',
-				'type'        => 'number',
-			)
-		);
 	}
 );

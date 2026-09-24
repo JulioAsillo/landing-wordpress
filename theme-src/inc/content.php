@@ -389,14 +389,12 @@ function gz_footer() {
 					'menu'  => 'legal',
 					'links' => array(
 						array( 'label' => 'Política de privacidad', 'url' => gz_page_url( 'politica-de-privacidad' ) ),
-						array( 'label' => 'Libro de reclamaciones', 'url' => gz_page_url( 'libro-de-reclamaciones' ) ),
 						array( 'label' => 'Términos y condiciones', 'url' => gz_page_url( 'terminos-y-condiciones' ) ),
 					),
 				),
 			),
 			'bottom'  => array(
 				array( 'label' => 'Política de privacidad', 'url' => gz_page_url( 'politica-de-privacidad' ) ),
-				array( 'label' => 'Libro de reclamaciones', 'url' => gz_page_url( 'libro-de-reclamaciones' ) ),
 			),
 		)
 	);

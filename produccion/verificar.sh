@@ -23,7 +23,6 @@ espera "Portada"                 "$GZ_URL/"                          200
 espera "API REST (formularios)"  "$GZ_URL/wp-json/"                  200
 espera "Política de privacidad"  "$GZ_URL/politica-de-privacidad/"   200
 espera "Términos y condiciones"  "$GZ_URL/terminos-y-condiciones/"   200
-espera "Libro de reclamaciones"  "$GZ_URL/libro-de-reclamaciones/"   200
 espera "Inicio de sesión"        "$GZ_URL/wp-login.php"              200
 espera "xmlrpc bloqueado"        "$GZ_URL/xmlrpc.php"                403
 espera "wp-config bloqueado"     "$GZ_URL/wp-config.php"             403

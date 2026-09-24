@@ -1092,50 +1092,6 @@ button { font-family: inherit; cursor: pointer; }
 /* Una página con Fluent Forms embebido fuera de la portada. */
 .gz-prose .fluentform { max-width: 560px; }
 
-/* -----------------------------------------------------------------------
-   LIBRO DE RECLAMACIONES (page-libro-de-reclamaciones.php)
-   Reutiliza la grilla y la tarjeta de Contacto; aquí solo lo propio.
-   ----------------------------------------------------------------------- */
-.gz-claims { padding-block: var(--gz-sp-lg) var(--gz-sp-xl); }
-.gz-claims .gz-contact__grid { align-items: start; }
-.gz-claims h1 { font-size: var(--gz-fs-h2); color: var(--gz-primary-dark); margin-bottom: .8rem; }
-.gz-claims__lead { font-size: var(--gz-fs-large); color: var(--gz-ink-soft); }
-
-.gz-claims__provider {
-	margin-top: 1.8rem; padding: 1.1rem 1.3rem;
-	border-radius: var(--gz-radius-sm);
-	background: #fff; border-left: 4px solid var(--gz-accent);
-	font-size: .92rem; line-height: 1.55; color: var(--gz-ink-soft);
-}
-.gz-claims__provider strong { display: block; color: var(--gz-primary-dark); font-family: var(--gz-font-display); font-size: 1.1rem; margin-bottom: .2rem; }
-
-.gz-claims__types { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.3rem; }
-.gz-claims__type { background: rgba(255,255,255,.65); border: 1px solid var(--gz-line); border-radius: var(--gz-radius-sm); padding: 1rem 1.1rem; }
-.gz-claims__type h4 { margin: 0 0 .3rem; font-size: 1rem; color: var(--gz-primary); }
-.gz-claims__type p { margin: 0; font-size: .86rem; line-height: 1.5; color: var(--gz-ink-soft); }
-
-.gz-claims__card-head { margin-bottom: 1.4rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gz-line); }
-.gz-claims__card-head h2 { font-size: 1.45rem; color: var(--gz-primary-dark); margin: 0 0 .2rem; }
-.gz-claims__card-head p { margin: 0; font-size: .85rem; color: var(--gz-ink-soft); }
-
-/* Tipo de reclamación como botones segmentados (Radio Field de FF). */
-.gz-claims .fluentform .ff-el-group:has(input[type="radio"]) .ff-el-input--content { display: flex; gap: .6rem; flex-wrap: wrap; }
-.gz-claims .fluentform .ff-el-form-check:has(input[type="radio"]) { flex: 1 1 0; margin: 0; }
-.gz-claims .fluentform .ff-el-form-check:has(input[type="radio"]) .ff-el-form-check-label {
-	justify-content: center; align-items: center;
-	padding: .7rem .9rem; border: 1px solid var(--gz-line); border-radius: var(--gz-radius-sm);
-	background: #fff; font-size: .95rem; font-weight: 600; color: var(--gz-ink);
-	transition: border-color .15s ease, background-color .15s ease;
-}
-.gz-claims .fluentform .ff-el-form-check:has(input[type="radio"]:checked) .ff-el-form-check-label {
-	border-color: var(--gz-primary); background: var(--gz-tint); color: var(--gz-primary-dark);
-}
-.gz-claims .fluentform .ff-el-form-check:has(input[type="radio"]:focus-visible) .ff-el-form-check-label { outline: 2px solid var(--gz-primary); outline-offset: 1px; }
-
-@media (max-width: 900px) {
-	.gz-claims__types { grid-template-columns: 1fr; }
-}
-
 /* =======================================================================
    13. FORMULARIOS: AVISOS DE ENVÍO
    Refuerzos de QA sobre Fluent Forms (BUG-005).

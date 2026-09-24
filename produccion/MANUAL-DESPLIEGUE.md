@@ -183,7 +183,6 @@ Es seguro repetir el comando: si el sitio ya está aprovisionado no modifica nad
 Comprueba los servicios, las páginas, los bloqueos de seguridad y envía un correo de prueba. Después, manualmente:
 
 - [ ] Enviar el formulario de contacto: llega el correo a `contacto@garantiza.pe` y la confirmación al visitante.
-- [ ] Enviar el Libro de Reclamaciones: llega la copia con el número de hoja.
 - [ ] El certificado TLS es válido y `http://` redirige a `https://`.
 - [ ] Ingresar a `https://garantiza.pe/wp-admin/` y cambiar la contraseña.
 

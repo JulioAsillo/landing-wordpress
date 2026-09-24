@@ -1,6 +1,6 @@
 <?php
 /**
- * Página suelta: política de privacidad, términos, libro de reclamaciones.
+ * Página suelta: política de privacidad y términos y condiciones.
  * El contenido lo edita el cliente desde el editor de WordPress.
  */
 

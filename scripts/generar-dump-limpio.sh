@@ -37,6 +37,16 @@ done
 ids="$(wpg post list --post_type=page --post_status=auto-draft,trash --format=ids || true)"
 # shellcheck disable=SC2086
 [ -z "$ids" ] || wpg post delete $ids --force >/dev/null
+# Libro de Reclamaciones retirado a pedido del cliente (v1.0.1): página,
+# formulario de Fluent Forms y ajuste del Personalizador.
+libro="$(gsql "SELECT ID FROM ${P}posts WHERE post_type='page' AND post_name='libro-de-reclamaciones'" || true)"
+# shellcheck disable=SC2086
+[ -z "$libro" ] || wpg post delete $libro --force >/dev/null
+form_libro="$(wpg theme mod get gz_claims_form_id 2>/dev/null | tr -d '[:space:]' || true)"
+if [ -n "$form_libro" ] && [ "$form_libro" != "0" ]; then
+    gsql "DELETE FROM ${P}fluentform_form_meta WHERE form_id=$form_libro; DELETE FROM ${P}fluentform_forms WHERE id=$form_libro;"
+fi
+wpg theme mod remove gz_claims_form_id >/dev/null || true
 ids="$(wpg comment list --format=ids || true)"
 # shellcheck disable=SC2086
 [ -z "$ids" ] || wpg comment delete $ids --force >/dev/null

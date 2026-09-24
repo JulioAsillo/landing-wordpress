@@ -58,7 +58,7 @@ function gz_seo_description() {
  * Título del documento.
  *
  * Portada: título de marca completo, sin eslogan detrás.
- * Interiores: título de la página + marca (Libro de reclamaciones |
+ * Interiores: título de la página + marca (Política de privacidad |
  * Garantiza), que es lo que se espera en un resultado de búsqueda.
  */
 add_filter(
@@ -122,8 +122,7 @@ add_action(
 /**
  * Datos estructurados de la organización.
  *
- * Solo en la portada y solo con los datos ya publicados en el Libro de
- * Reclamaciones, que son los únicos verificados por el cliente. Los
+ * Solo en la portada y solo con los datos verificados por el cliente. Los
  * canales de contacto (teléfono, WhatsApp) se añadirán aquí cuando el
  * cliente los entregue.
  */
