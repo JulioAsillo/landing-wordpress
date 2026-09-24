@@ -12,7 +12,7 @@
 #  método (shell, kaniko, buildah), adaptar solo las líneas de build y push.
 #  El runner necesita salida a Docker Hub y a downloads.wordpress.org.
 # =============================================================================
-stages: [build]
+stages: [build, analisis]
 
 imagenes:
   stage: build
@@ -32,4 +32,25 @@ imagenes:
           --label "org.opencontainers.image.revision=$CI_COMMIT_SHORT_SHA" \
           -t "$CI_REGISTRY_IMAGE/garantiza-$t:$VERSION" .
         docker push "$CI_REGISTRY_IMAGE/garantiza-$t:$VERSION"
+      done
+
+# Análisis de vulnerabilidades de las imágenes recién publicadas. Si falla,
+# esa versión NO se despliega: corregir (normalmente, reconstruir para tomar
+# parches de la imagen base) y publicar un tag nuevo.
+analisis:
+  stage: analisis
+  image:
+    name: aquasec/trivy:latest     # fijar a una versión concreta en su GitLab
+    entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_TAG
+  variables:
+    TRIVY_USERNAME: $CI_REGISTRY_USER
+    TRIVY_PASSWORD: $CI_REGISTRY_PASSWORD
+  script:
+    - VERSION="${CI_COMMIT_TAG#v}"
+    - |
+      for t in wp nginx db; do
+        trivy image --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed \
+          "$CI_REGISTRY_IMAGE/garantiza-$t:$VERSION"
       done

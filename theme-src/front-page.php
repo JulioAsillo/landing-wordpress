@@ -8,6 +8,10 @@
  * pueda enchufar sin tocar el marcado.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 get_header();
 
 // 'clients' retirada a pedido del cliente (v0.3.0); la plantilla se conserva.

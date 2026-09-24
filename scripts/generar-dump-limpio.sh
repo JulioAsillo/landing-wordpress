@@ -84,10 +84,20 @@ echo "Páginas:";      gsql "SELECT ID, post_name, post_status FROM ${P}posts WH
 echo "Formularios:";  gsql "SELECT id, title, status FROM ${P}fluentform_forms"
 echo "Ajustes tema:"; wpg option get theme_mods_landing --format=json
 echo "Usuarios:";     gsql "SELECT ID, user_login FROM ${P}users"
-echo "Registros de formularios: $(gsql "SELECT COUNT(*) FROM ${P}fluentform_submissions")  (debe ser 0)"
+registros="$(gsql "SELECT COUNT(*) FROM ${P}fluentform_submissions")"
+echo "Registros de formularios: $registros  (debe ser 0)"
 restos="$(zcat "$SALIDA" | grep -c -E '34\.132\.80\.1|novaly|julio|samy' || true)"
 echo "Líneas con rastros de desarrollo (IP, novaly, julio, samy): $restos  (debe ser 0)"
 echo "-----------------------------------------------------------------------------"
+
+# Barrera dura: el volcado se versiona, así que nunca debe salir con datos
+# personales ni rastros del entorno de desarrollo.
+if [ "$registros" != "0" ] || [ "$restos" != "0" ]; then
+    rm -f "$SALIDA"
+    sql -e "DROP DATABASE $GOLD;"
+    echo "ERROR: el volcado no está limpio; se eliminó $SALIDA. No confirmar nada." >&2
+    exit 1
+fi
 
 sql -e "DROP DATABASE $GOLD;"
 ls -lh "$SALIDA"

@@ -6,7 +6,7 @@ node_modules/
 .idea/
 deploy/build/
 entrega/
-.idea/
-entrega/
-# Contenido inicial de producción: se genera, no se versiona
-produccion/db/*.sql.gz
+# Contenido inicial de producción (produccion/db/garantiza-golden.sql.gz):
+# SÍ se versiona, porque GitLab CI construye la imagen db desde el repo.
+# Solo debe confirmarse la salida de scripts/generar-dump-limpio.sh, que
+# aborta si el volcado contiene registros de formulario.

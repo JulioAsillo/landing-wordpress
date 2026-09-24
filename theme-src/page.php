@@ -3,6 +3,11 @@
  * Página suelta: política de privacidad, términos, libro de reclamaciones.
  * El contenido lo edita el cliente desde el editor de WordPress.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 get_header();
 ?>
 <div class="gz-page gz-wrap">

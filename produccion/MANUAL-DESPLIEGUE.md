@@ -192,7 +192,8 @@ Comprueba los servicios, las páginas, los bloqueos de seguridad y envía un cor
 ## 10. Pendientes fuera del stack
 
 - **SPF, DKIM y DMARC** del dominio de la cuenta de envío: sin ellos los correos del formulario pueden caer en spam.
-- **HSTS y redirección HTTP→HTTPS**: se configuran en Traefik, no en este stack.
+- **Redirección HTTP→HTTPS**: se configura en Traefik. La cabecera HSTS ya la emite el Nginx del stack (sin `includeSubDomains`); confirmar que Traefik no la sobrescribe con otro valor.
+- **Mantenimiento de seguridad** (sección 11.6): designar al responsable antes de pasar a producción.
 - **www**: si se publicará `www.garantiza.pe`, crear el registro DNS y activar las líneas comentadas de `docker-stack.yml`.
 - **Respaldos** (sección 11.1): programarlos según la política interna.
 
@@ -262,6 +263,30 @@ docker exec -u www-data $WP wp user list
 docker exec -u www-data $WP wp user update <usuario> --user_pass='<nueva>'     # recuperar acceso
 docker volume prune        # cada redespliegue deja un volumen anónimo huérfano
 ```
+
+### 11.6 Mantenimiento de seguridad (responsabilidad del cliente)
+
+Las imágenes son inmutables: el sitio **no se actualiza solo** y el panel no permite instalar ni actualizar nada. Cada parche de seguridad llega como una versión nueva de la imagen (sección 11.3). Por eso alguien debe vigilar los avisos y decidir cuándo publicar.
+
+| Dato | Valor (lo completa el cliente) |
+| --- | --- |
+| Responsable de vigilar los avisos | `____________________` |
+| Periodicidad de revisión | `____________________` (recomendado: semanal) |
+| Plazo para aplicar un parche de seguridad | `____________________` (recomendado: 7 días si es crítico o alto, 30 días el resto) |
+
+Componentes a vigilar y dónde se fija su versión (`produccion/Dockerfile`):
+
+| Componente | ARG | Dónde mirar los avisos |
+| --- | --- | --- |
+| WordPress 7.1 (PHP 8.4) | `WP_TAG` | wordpress.org/news/category/security |
+| Fluent Forms | `FLUENTFORM_VERSION` | wordpress.org/plugins/fluentform (pestaña Development) y wpscan.com / wordfence.com |
+| WP Mail SMTP | `WPMAILSMTP_VERSION` | wordpress.org/plugins/wp-mail-smtp y wpscan.com / wordfence.com |
+| Nginx 1.30 | `NGINX_TAG` | nginx.org (sección news) |
+| MySQL 8.4 LTS | `MYSQL_TAG` | dev.mysql.com (notas de versión) |
+
+Procedimiento: cambiar el ARG, crear un tag nuevo (por ejemplo `v1.0.1`) para que GitLab CI construya y analice las imágenes, y desplegar con la sección 11.3. Las etiquetas `7.1-php8.4-fpm-alpine`, `1.30-alpine` y `8.4` recogen los parches de su rama con solo reconstruir, aunque el ARG no cambie.
+
+El trabajo `analisis` de `.gitlab-ci.yml` revisa las imágenes con Trivy y falla ante vulnerabilidades altas o críticas con corrección disponible. Cubre el sistema base y PHP; **no** detecta vulnerabilidades de los plugins de WordPress, que siguen dependiendo de la vigilancia de esta sección.
 
 ---
 

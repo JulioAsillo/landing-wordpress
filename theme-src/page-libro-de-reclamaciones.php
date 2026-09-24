@@ -11,6 +11,10 @@
  * ejemplo, un shortcode pegado a mano).
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 get_header();
 
 $gz_claims_id = (int) get_theme_mod( 'gz_claims_form_id', 0 );

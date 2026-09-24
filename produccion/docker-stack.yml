@@ -34,7 +34,10 @@ services:
     networks: [ proxy, interna ]
     deploy:
       <<: *deploy
-      resources: { limits: { memory: 128M } }
+      # Recursos según P04 (Sizing) y P12 (LLD).
+      resources:
+        limits: { cpus: "0.50", memory: 128M }
+        reservations: { cpus: "0.10", memory: 64M }
       # En Swarm los labels de Traefik van bajo deploy.labels.
       labels:
         - "traefik.enable=true"
@@ -114,7 +117,9 @@ services:
     networks: [ interna ]
     deploy:
       <<: *deploy
-      resources: { limits: { memory: 512M } }
+      resources:
+        limits: { cpus: "1.00", memory: 768M }
+        reservations: { cpus: "0.25", memory: 256M }
 
   db:
     <<: *comun
@@ -123,6 +128,8 @@ services:
       --character-set-server=utf8mb4
       --collation-server=utf8mb4_unicode_ci
       --innodb-buffer-pool-size=256M
+      --max-connections=50
+      --binlog-expire-logs-seconds=604800
     environment:
       MYSQL_DATABASE: garantiza
       MYSQL_USER: garantiza
@@ -140,7 +147,9 @@ services:
       start_period: 60s
     deploy:
       <<: *deploy
-      resources: { limits: { memory: 1G } }
+      resources:
+        limits: { cpus: "1.00", memory: 1G }
+        reservations: { cpus: "0.25", memory: 512M }
 
 # Los secrets se crean ANTES del despliegue con ./crear-secrets.sh.
 # Viven cifrados en Swarm; no se escriben en ningún archivo.

@@ -2,6 +2,11 @@
 /**
  * Plantilla de respaldo.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 get_header();
 ?>
 <div class="gz-page gz-wrap">

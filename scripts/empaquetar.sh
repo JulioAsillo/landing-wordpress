@@ -17,6 +17,8 @@ DUMP="produccion/db/garantiza-golden.sql.gz"
 DEST="entrega/garantiza-$V"
 
 [ -f "$DUMP" ] || { echo "ERROR: falta $DUMP. Ejecutar antes scripts/generar-dump-limpio.sh" >&2; exit 1; }
+git ls-files --error-unmatch "$DUMP" >/dev/null 2>&1 \
+    || { echo "ERROR: $DUMP no está confirmado en git; el paquete de fuente no lo incluiría." >&2; exit 1; }
 [ -z "$(git status --porcelain)" ] || echo "AVISO: hay cambios sin confirmar; el paquete de fuente solo incluye lo que está en el último commit."
 
 rm -rf "$DEST"; mkdir -p "$DEST"/{imagenes,fuente,despliegue}
@@ -34,8 +36,7 @@ docker save "garantiza-wp:$V" "garantiza-nginx:$V" "garantiza-db:$V" | gzip > "$
 
 echo "==> Código fuente"
 git archive --format=tar --prefix="garantiza-$V/" HEAD > "$DEST/fuente/f.tar"
-# El contenido inicial no está en Git (lleva datos de configuración): se añade aquí.
-tar --append -f "$DEST/fuente/f.tar" --transform "s|^|garantiza-$V/|" "$DUMP"
+# El contenido inicial viaja dentro de git archive: está versionado (ver .gitignore).
 gzip -9 "$DEST/fuente/f.tar"; mv "$DEST/fuente/f.tar.gz" "$DEST/fuente/garantiza-fuente-$V.tar.gz"
 
 echo "==> Archivos de despliegue"

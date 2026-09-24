@@ -1,6 +1,6 @@
 # Entorno de desarrollo — Landing WordPress
 
-Stack: Nginx + WordPress (PHP-FPM 8.4) + MySQL 8.0 + Mailpit + WP-CLI.
+Stack: Nginx + WordPress (PHP-FPM 8.4) + MySQL 8.4 + Mailpit + WP-CLI.
 
 ## Arranque
 
@@ -16,7 +16,7 @@ make up
 make logs                      # verificar que no haya errores
 ```
 
-Abrir `http://34.132.80.1` y completar el asistente de WordPress (o usar `make install` para instalación desatendida).
+Abrir la URL definida en `WP_URL` (siempre por HTTPS o por túnel SSH) y completar el asistente de WordPress (o usar `make install` para instalación desatendida).
 
 ## Comandos frecuentes
 
@@ -34,7 +34,7 @@ Abrir `http://34.132.80.1` y completar el asistente de WordPress (o usar `make i
 MySQL y Mailpit están atados a `127.0.0.1` a propósito: no quedan expuestos a internet. Para alcanzarlos desde tu equipo, abrir un túnel SSH:
 
 ```bash
-ssh -i public-key-julio -L 8025:localhost:8025 -L 3306:localhost:3306 dev-user@34.132.80.1
+ssh -i <clave> -L 8025:localhost:8025 -L 3306:localhost:3306 <usuario>@<servidor-dev>
 ```
 
 Luego: bandeja de correos en `http://localhost:8025` y MySQL en `localhost:3306`.

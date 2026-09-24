@@ -45,12 +45,12 @@ debug-log:     ## Sigue el log de depuración de WordPress (fuera de la raíz we
 
 db-dump:       ## Respaldo de la base de datos con fecha
 	@mkdir -p backups
-	docker compose exec -T db sh -c 'mysqldump -u root -p"$$MYSQL_ROOT_PASSWORD" "$$MYSQL_DATABASE"' \
+	docker compose exec -T db sh -c 'MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" exec mysqldump -u root --single-transaction --no-tablespaces "$$MYSQL_DATABASE"' \
 		> backups/dump-$$(date +%Y%m%d-%H%M).sql
 	@echo "Respaldo generado en backups/"
 
 db-restore:    ## Restaura. Uso: make db-restore FILE=backups/dump-xxx.sql
-	docker compose exec -T db sh -c 'mysql -u root -p"$$MYSQL_ROOT_PASSWORD" "$$MYSQL_DATABASE"' < $(FILE)
+	docker compose exec -T db sh -c 'MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" exec mysql -u root "$$MYSQL_DATABASE"' < $(FILE)
 
 prune:         ## Libera espacio en disco (importante: solo hay 5.4 GB)
 	docker system prune -af --volumes=false

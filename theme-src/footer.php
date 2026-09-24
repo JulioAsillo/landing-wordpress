@@ -3,6 +3,10 @@
  * Pie del sitio.
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $gz_footer = gz_footer();
 ?>
 </main>

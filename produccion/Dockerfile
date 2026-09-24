@@ -16,7 +16,7 @@
 # =============================================================================
 ARG WP_TAG=7.1-php8.4-fpm-alpine
 ARG WPCLI_TAG=cli-php8.4
-ARG NGINX_TAG=1.27-alpine
+ARG NGINX_TAG=1.30-alpine
 ARG MYSQL_TAG=8.4
 
 # --- Plugins, con versión fija, desde el repositorio oficial -----------------

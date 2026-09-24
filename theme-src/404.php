@@ -2,6 +2,11 @@
 /**
  * Página no encontrada.
  */
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 get_header();
 ?>
 <div class="gz-page gz-wrap">
