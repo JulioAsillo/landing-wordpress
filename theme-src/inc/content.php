@@ -378,7 +378,6 @@ function gz_footer() {
 					'title' => 'Contacto',
 					'menu'  => '',
 					'links' => array(
-						array( 'label' => 'WhatsApp corporativo', 'url' => '#' ),
 						array( 'label' => 'contacto@garantiza.pe', 'url' => 'mailto:contacto@garantiza.pe' ),
 						array( 'label' => 'Lima, Perú', 'url' => '' ),
 						array( 'label' => 'Cobertura a nivel nacional', 'url' => '' ),
